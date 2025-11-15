@@ -3,1060 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資料結構小酒館</title>
+    <title>選擇關卡 - 演算法生存挑戰</title>
     <style>
-        /* --- 1. 基本與佈局 (Layout) --- */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        * {
             margin: 0;
-            background-color: #f7f9fc;
-            color: #333;
-            display: grid;
-            grid-template-columns: 260px 1fr; /* 左側導覽列 260px，右側內容填滿 */
-            height: 100vh;
-        }
-
-        /* --- 2. 左側導覽列 (Sidebar) --- */
-        nav.sidebar {
-            background-color: #eef1f6;
-            padding: 2rem 0;
-            border-right: 1px solid #dcdfe6;
-            overflow-y: auto;
-        }
-
-        nav.sidebar h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 0 1.5rem;
-            margin-bottom: 1rem;
-            color: #0052cc; /* 類似 Swift 的藍色 */
-        }
-
-        nav.sidebar ul {
-            list-style: none;
             padding: 0;
-            margin: 0;
+            box-sizing: border-box;
         }
 
-        nav.sidebar li a {
-            display: block;
-            padding: 0.75rem 1.5rem 0.75rem 2.5rem; /* 增加內縮 */
-            text-decoration: none;
-            color: #495057;
-            font-weight: 500;
-            border-left: 4px solid transparent;
-            transition: all 0.2s ease;
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
         }
 
-        nav.sidebar li a:hover {
-            background-color: #dfe6f0;
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
         }
 
-        /* 當前選中的頁面樣式 */
-        nav.sidebar li a.active {
-            color: #007aff;
-            font-weight: 600;
-            background-color: #fff;
-            border-left-color: #007aff;
-        }
-
-        /* --- 3. 右側內容區 (Main Content) --- */
-        main.content {
-            padding: 2.5rem;
-            overflow-y: auto;
-        }
-
-        /* 內容頁面預設隱藏 */
-        .page {
-            display: none;
-        }
-
-        /* 當前顯示的頁面 */
-        .page.active {
-            display: block;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 2rem;
-        }
-
-        p.intro {
-            font-size: 1.1rem;
-            color: #555;
-            max-width: 700px;
-            line-height: 1.6;
-        }
-
-        /* --- 4. 首頁卡片 (Playground-style Cards) --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            border-top: 5px solid;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.3rem;
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        /* 為卡片指定主題色 */
-        .card[data-page="page-queue"] { border-color: #007aff; } /* 藍色 */
-        .card[data-page="page-bubble"] { border-color: #ff9500; } /* 橘色 */
-        .card[data-page="page-list"] { border-color: #34c759; } /* 綠色 */
-        .card[data-page="page-tree"] { border-color: #af52de; } /* 紫色 */
-
-
-        /* --- 5. 佇列遊戲 (Queue Game) 專用樣式 --- */
-        .game-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 2rem;
-        }
-
-        .controls {
+        .navbar {
+            background: linear-gradient(135deg, var(--squid-dark) 0%, #1a0a1a 100%);
+            border-bottom: 3px solid var(--squid-pink);
+            padding: 1rem 3rem;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.3);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--squid-pink);
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .player-auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .auth-button {
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .auth-button:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 15px var(--squid-cyan);
+        }
+        .player-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--squid-cyan);
+        }
+        .player-name {
+            font-weight: 600;
+        }
+
+        .games-section, .articles-section {
+            padding: 4rem 3rem;
+            background: var(--squid-dark);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 3rem;
+            color: var(--squid-pink);
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.6);
+        }
+
+        .games-grid, .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .game-card, .article-card {
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%);
+            border: 3px solid var(--squid-pink);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover, .article-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(255, 20, 147, 0.4);
+            border-color: var(--squid-cyan);
+        }
+
+        .game-icon, .article-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-title, .article-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--squid-cyan);
+        }
+
+        .game-subtitle, .article-subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .game-description, .article-description {
+            color: #aaa;
+            line-height: 1.6;
             margin-bottom: 1.5rem;
         }
 
-        .controls input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .controls button {
-            padding: 0.75rem 1.25rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #enqueue-btn {
-            background-color: #007aff;
-            color: white;
-        }
-        #enqueue-btn:hover { background-color: #005ecb; }
-
-        #dequeue-btn {
-            background-color: #e5e5ea;
-            color: #333;
-        }
-        #dequeue-btn:hover { background-color: #dcdcdc; }
-
-        .queue-label {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-            color: #555;
-            padding: 0 10px;
-        }
-
-        /* 佇列視覺 (輸送帶) */
-        .queue-belt {
-            background: #f4f4f4;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            overflow-x: auto;
-        }
-
-        /* 佇列中的項目 (餐點) */
-        .queue-item {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); /* 橘黃漸層 */
-            color: #fff;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-right: 10px;
-            flex-shrink: 0; /* 確保項目不會被壓縮 */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .learning-guide {
-            background-color: #eef1f6;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            line-height: 1.7;
-        }
-        .learning-guide h3 {
-            margin-top: 0;
-            color: #0052cc;
-        }
-        .learning-guide ul {
-            padding-left: 20px;
-        }
-        .learning-guide code {
-            background-color: #dfe6f0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: "SF Mono", "Fira Code", monospace;
-        }
-
-        /* --- 6. Toast 通知系統 --- */
-        .toast-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 250px;
-            animation: slide-in-right 0.3s ease-out;
-        }
-
-        .toast.success { border-left: 4px solid #34c759; }
-        .toast.error { border-left: 4px solid #ff3b30; }
-        .toast.info { border-left: 4px solid #007aff; }
-        .toast.warning { border-left: 4px solid #ff9500; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast-message {
-            flex: 1;
-            font-size: 0.95rem;
-        }
-
-        /* --- 7. 動畫效果 --- */
-        @keyframes slide-in-right {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse-highlight {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .pulse-highlight {
-            animation: pulse-highlight 1s ease-out;
-        }
-
-        .shake {
-            animation: shake 0.3s ease-out;
-        }
-
-        .error-input {
-            border-color: #ff3b30 !important;
-            box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
-        }
-
-        /* --- 8. Tooltip --- */
-        .tooltip {
-            position: absolute;
-            background: #333;
-            color: white;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            z-index: 10000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .tooltip.show {
-            opacity: 1;
-        }
-
-        .tooltip::after {
-            content: '';
-            position: absolute;
-            border: 5px solid transparent;
-        }
-
-        .tooltip.top::after {
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-top-color: #333;
-        }
-
-        /* --- 9. 操作指引面板 --- */
-        .instruction-panel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .instruction-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .instruction-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
+        .game-status {
+            display: inline-block;
             padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: 20px;
             font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-
-        .progress-fill {
-            background: white;
-            height: 100%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-
-        .instruction-steps {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .step.completed {
-            background: rgba(52, 199, 89, 0.2);
-        }
-
-        .step.active {
-            background: rgba(255, 255, 255, 0.25);
             font-weight: 600;
-            transform: scale(1.02);
+            background: rgba(0, 255, 65, 0.2);
+            color: var(--squid-green);
+            border: 2px solid var(--squid-green);
         }
-
-        .step.pending {
-            opacity: 0.6;
-        }
-
-        .step-icon {
-            font-size: 1.2rem;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .step.completed .step-icon::before {
-            content: '✓';
-        }
-
-        .step.active .step-icon::before {
-            content: '▶';
-            animation: pulse 1.5s infinite;
-        }
-
-        .step.pending .step-icon::before {
-            content: '○';
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .step-text {
-            flex: 1;
-        }
-
-        .concept-explanation {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .expand-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
-            text-align: left;
-            transition: background 0.2s;
-        }
-
-        .expand-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .explanation-content {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            display: none;
-        }
-
-        .explanation-content.show {
-            display: block;
-        }
-
     </style>
 </head>
 <body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="logo">🦑 演算法生存挑戰</div>
+        <div id="player-auth-container" class="player-auth-container">
+            <button id="sign-in-btn" class="auth-button">使用 Google 登入</button>
+        </div>
+    </nav>
 
-<nav class="sidebar">
-    <h2>資料結構小酒館</h2>
-    <ul>
-        <li><a href="#" class="nav-link active" data-page="page-home">🏠 首頁</a></li>
-        <li><a href="#" class="nav-link" data-page="page-queue">🍔 佇列 (Queue)</a></li>
-        <li><a href="#" class="nav-link" data-page="page-bubble">🥂 氣泡排序法</a></li>
-        <li><a href="#" class="nav-link" data-page="page-list">🧾 雙向連結串列</a></li>
-        <li><a href="#" class="nav-link" data-page="page-tree">🌳 樹狀結構</a></li>
-    </ul>
-</nav>
-
-<main class="content">
-
-    <section id="page-home" class="page active">
-        <h1>歡迎來到資料結構小酒館！</h1>
-        <p class="intro">
-            在這裡，我們不談生硬的理論。您將扮演小酒館的實習生，
-            透過完成一系列的「遊戲關卡」，在玩樂中學會最重要的資料結構與演算法。
-        </p>
-
-        <div class="card-grid">
-            <div class="card" data-page="page-queue">
-                <h3>🍔 關卡 1: 吧台出餐區</h3>
-                <p>學習「佇列 (Queue)」的先進先出 (FIFO) 原則，確保餐點依照正確順序送出！</p>
+    <!-- 遊戲關卡 -->
+    <section class="games-section">
+        <h2 class="section-title">🎮 選擇你的挑戰</h2>
+        
+        <div class="games-grid">
+            <!-- 佇列 -->
+            <div class="game-card" onclick="location.href='queue-game.html'">
+                <div class="game-icon">🔨</div>
+                <h3 class="game-title">打地鼠挑戰</h3>
+                <p class="game-subtitle">Queue（佇列）</p>
+                <p class="game-description">
+                    學習先進先出（FIFO）的概念。地鼠依序出現排隊，必須按照出現順序打擊。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
             </div>
-            <div class="card" data-page="page-bubble">
-                <h3>🥂 關卡 2: 酒杯整理架</h3>
-                <p>學習「氣泡排序法」，將吧檯上雜亂的酒杯由矮到高一一排好。</p>
+
+            <!-- 堆疊 -->
+            <div class="game-card" onclick="location.href='stack-game.html'">
+                <div class="game-icon">📚</div>
+                <h3 class="game-title">堆疊消消樂</h3>
+                <p class="game-subtitle">Stack（堆疊）</p>
+                <p class="game-description">
+                    學習後進先出（LIFO）的概念。方塊不斷堆疊，只能從最上面取出。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
             </div>
-            <div class="card" data-page="page-list">
-                <h3>🧾 關卡 3: VIP 訂位表</h3>
-                <p>學習「雙向連結串列」，彈性地在訂位表中插入或刪除 VIP 顧客。</p>
+
+            <!-- 鏈結串列 -->
+            <div class="game-card" onclick="location.href='linked-list-game.html'">
+                <div class="game-icon">🍪</div>
+                <h3 class="game-title">椪糖挑戰</h3>
+                <p class="game-subtitle">Linked List（鏈結串列）</p>
+                <p class="game-description">
+                    學習節點之間的連結關係。每個椪糖圖案都是一個節點，透過指標連接。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
             </div>
-            <div class="card" data-page="page-tree">
-                <h3>🌳 關卡 4: 菜單分類系統</h3>
-                <p>學習「樹狀結構」，設計一份有層次、易於瀏覽的餐廳菜單。</p>
+
+            <!-- 樹狀結構 -->
+            <div class="game-card" onclick="location.href='tree-game.html'">
+                <div class="game-icon">🌉</div>
+                <h3 class="game-title">玻璃橋挑戰</h3>
+                <p class="game-subtitle">Binary Tree（二元樹）</p>
+                <p class="game-description">
+                    學習樹狀結構的遍歷。每一步選擇左或右，形成二元樹的路徑。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
+            </div>
+
+            <!-- 圖論 -->
+            <div class="game-card" onclick="location.href='graph-game.html'">
+                <div class="game-icon">🗺️</div>
+                <h3 class="game-title">最短路徑挑戰</h3>
+                <p class="game-subtitle">Graph（圖）</p>
+                <p class="game-description">
+                    學習圖的遍歷與最短路徑。在複雜的圖案中找到最佳路線。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
+            </div>
+
+            <!-- 排序演算法 -->
+            <div class="game-card" onclick="location.href='sorting-game.html'">
+                <div class="game-icon">🎯</div>
+                <h3 class="game-title">彈珠排序挑戰</h3>
+                <p class="game-subtitle">Sorting（排序）</p>
+                <p class="game-description">
+                    親手操作氣泡排序，理解演算法的奧秘。
+                </p>
+                <span class="game-status">✓ 可遊玩</span>
             </div>
         </div>
     </section>
 
-    <section id="page-queue" class="page">
-        <h1>🍔 關卡 1: 吧台出餐區 (佇列)</h1>
-        <p class="intro">廚房做好了餐點！我們的任務是透過輸送帶，確保餐點能「先進先出」，正確地送到顧客手中。</p>
-
-        <!-- 操作指引面板 -->
-        <div class="instruction-panel" id="queue-instructions">
-            <div class="instruction-header">
-                <h3>📋 任務指引</h3>
-                <button class="reset-btn" id="reset-btn">🔄 重置</button>
+    <!-- 教學文章區塊 -->
+    <section class="articles-section">
+        <h2 class="section-title">📚 學習資源</h2>
+        <div class="articles-grid">
+            <!-- 演算法概論 -->
+            <div class="article-card" onclick="location.href='article-algorithm-intro.html';">
+                <div class="article-icon">💡</div>
+                <h3 class="article-title">演算法概論：程式設計的靈魂</h3>
+                <p class="article-subtitle">從概念到應用</p>
+                <p class="article-description">
+                    深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。
+                </p>
             </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            <!-- 資料結構總覽 -->
+            <div class="article-card" onclick="window.open('https://www.youtube.com/watch?v=Du8DQ7_D-4Q', '_blank');">
+                <div class="article-icon">🧱</div>
+                <h3 class="article-title">資料結構總覽：高效組織數據的藝術</h3>
+                <p class="article-subtitle">陣列、鏈結串列、樹與圖</p>
+                <p class="article-description">
+                    探索各種資料結構的特性與應用場景，了解如何選擇最適合的工具。
+                </p>
             </div>
 
-            <ol class="instruction-steps" id="instruction-steps">
-                <!-- 步驟會由 JavaScript 動態生成 -->
-            </ol>
-
-            <div class="concept-explanation">
-                <button class="expand-btn" id="expand-btn">💡 為什麼這樣做？</button>
-                <div class="explanation-content" id="explanation-content">
-                    這個動作叫做 <strong>Enqueue（入隊）</strong>，會把新元素加到佇列的尾端。
-                    佇列遵循 FIFO（先進先出）原則，就像排隊買票一樣，先到的人先服務！
-                    時間複雜度：O(1) - 表示無論佇列有多長，加入新元素的時間都是固定的。
-                </div>
-            </div>
-        </div>
-
-        <div class="learning-guide">
-            <h3>1. 什麼是佇列 (Queue)？</h3>
-            <p>
-                想像一下在咖啡店排隊：先來的人會先點餐，新來的客人必須排在隊伍的最後面。這就是「佇列」的核心精神：<b>先進先出 (First-In, First-Out, FIFO)</b>。
-            </p>
-
-            <h3>2. 如何玩這個遊戲？</h3>
-            <p>在這個遊戲中，「輸送帶」就是我們的佇列：</p>
-            <ul>
-                <li><b>放到輸送帶 (Enqueue)</b>：將新的餐點放到輸送帶的「尾端」。</li>
-                <li><b>取餐給顧客 (Dequeue)</b>：從輸送帶的「前端」取走最早放上去的餐點。</li>
-            </ul>
-
-            <p><b>請你試試看：</b></p>
-            <ol>
-                <li>在輸入框中輸入「漢堡」，按下 <code>放到輸送帶</code>。</li>
-                <li>接著輸入「薯條」，再按一次。</li>
-                <li>你會看到輸送帶上餐點的順序是： 漢堡 → 薯條。</li>
-                <li>現在，按下 <code>取餐給顧客</code>，最先進來的「漢堡」會被先取走。</li>
-            </ol>
-            <p>
-                這個遊戲完美展示了佇列「先進先出」的特性。在程式設計中，佇列常用於處理需要依序處理的任務，例如處理網路請求、管理印表機的工作排程等。
-            </p>
-        </div>
-
-        <div class="game-container">
-            <h3>遊戲控制</h3>
-            <div class="controls">
-                <input type="text" id="item-input" placeholder="輸入餐點名稱 (例如: 漢堡)">
-                <button id="enqueue-btn">放到輸送帶 (Enqueue)</button>
-                <button id="dequeue-btn">取餐給顧客 (Dequeue)</button>
+            <!-- 佇列與堆疊 -->
+            <div class="article-card" onclick="window.open('https://www.youtube.com/watch?v=wjI1WuxB72Y', '_blank');">
+                <div class="article-icon">🔄</div>
+                <h3 class="article-title">佇列與堆疊：先進先出與後進先出</h3>
+                <p class="article-subtitle">兩種基本數據結構的應用</p>
+                <p class="article-description">
+                    透過生活實例，理解佇列 (Queue) 和堆疊 (Stack) 的運作原理及其在程式中的應用。
+                </p>
             </div>
 
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
-
-            <h3>輸送帶 (佇列本體)</h3>
-            <div class="queue-label">
-                <span id="label-front">➡️ 前端 (Front) - 從這裡取餐</span>
-                <span id="label-rear">⬅️ 尾端 (Rear) - 從這裡放餐</span>
+            <!-- 鏈結串列深入解析 -->
+            <div class="article-card" onclick="window.open('https://www.youtube.com/watch?v=JlMyYuYF1bA', '_blank');">
+                <div class="article-icon">🔗</div>
+                <h3 class="article-title">鏈結串列：彈性數據組織的基石</h3>
+                <p class="article-subtitle">動態記憶體管理的秘密</p>
+                <p class="article-description">
+                    學習鏈結串列的節點連結方式，以及它在動態數據處理上的優勢。
+                </p>
             </div>
-            <div class="queue-belt" id="queue-visual">
+
+            <!-- 樹狀結構與二元樹 -->
+            <div class="article-card" onclick="window.open('https://www.youtube.com/watch?v=oSWTXtM63nY', '_blank');">
+                <div class="article-icon">🌳</div>
+                <h3 class="article-title">樹狀結構與二元樹：階層數據的完美呈現</h3>
+                <p class="article-subtitle">從家譜到搜尋引擎</p>
+                <p class="article-description">
+                    探索樹的各種形態，特別是二元樹的搜尋、插入與刪除操作。
+                </p>
+            </div>
+
+            <!-- 圖論與最短路徑 -->
+            <div class="article-card" onclick="window.open('https://www.youtube.com/watch?v=pVfj6m_2_g8', '_blank');">
+                <div class="article-icon">🌐</div>
+                <h3 class="article-title">圖論與最短路徑：複雜網絡的導航者</h3>
+                <p class="article-subtitle">Dijkstra 演算法的應用</p>
+                <p class="article-description">
+                    理解圖的構成，以及 Dijkstra 演算法如何在高鐵路線、網路路由中找到最佳路徑。
+                </p>
             </div>
         </div>
     </section>
 
-    <section id="page-bubble" class="page">
-        <h1>🥂 關卡 2: 酒杯整理架 (氣泡排序法)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
-
-    <section id="page-list" class="page">
-        <h1>🧾 關卡 3: VIP 訂位表 (雙向連結串列)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
-
-    <section id="page-tree" class="page">
-        <h1>🌳 關卡 4: 菜單分類系統 (樹狀結構)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
-
-</main>
-
-<script>
-    // ===== Core Classes =====
-
-    // FeedbackEngine: 處理所有視覺回饋
-    class FeedbackEngine {
-        constructor() {
-            this.toastContainer = null;
-            this.initToastContainer();
-        }
-
-        initToastContainer() {
-            this.toastContainer = document.createElement('div');
-            this.toastContainer.className = 'toast-container';
-            document.body.appendChild(this.toastContainer);
-        }
-
-        showToast(message, type = 'success', duration = 3000) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const icons = {
-                success: '✓',
-                error: '✗',
-                info: 'ℹ',
-                warning: '⚠'
-            };
-
-            toast.innerHTML = `
-                <span class="toast-icon">${icons[type] || icons.info}</span>
-                <span class="toast-message">${message}</span>
-            `;
-
-            this.toastContainer.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
-        }
-
-        highlightElement(selector, duration = 1000) {
-            const element = document.querySelector(selector);
-            if (!element) return;
-
-            element.classList.add('pulse-highlight');
-            setTimeout(() => {
-                element.classList.remove('pulse-highlight');
-            }, duration);
-        }
-
-        showTooltip(element, message, position = 'top') {
-            const tooltip = document.createElement('div');
-            tooltip.className = `tooltip ${position}`;
-            tooltip.textContent = message;
-            document.body.appendChild(tooltip);
-
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2 + 'px';
-            tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
-
-            setTimeout(() => tooltip.classList.add('show'), 10);
-
-            setTimeout(() => {
-                tooltip.classList.remove('show');
-                setTimeout(() => tooltip.remove(), 200);
-            }, 2000);
-        }
-
-        animateAction(element, animationType) {
-            if (typeof element === 'string') {
-                element = document.querySelector(element);
-            }
-            if (!element) return;
-
-            element.classList.add(animationType);
-            setTimeout(() => {
-                element.classList.remove(animationType);
-            }, 300);
-        }
-
-        showErrorHint(inputElement, message) {
-            if (typeof inputElement === 'string') {
-                inputElement = document.querySelector(inputElement);
-            }
-            if (!inputElement) return;
-
-            inputElement.classList.add('error-input');
-            this.animateAction(inputElement, 'shake');
-            this.showTooltip(inputElement, message, 'top');
-
-            setTimeout(() => {
-                inputElement.classList.remove('error-input');
-            }, 2000);
-
-            inputElement.focus();
-        }
-    }
-
-    // ErrorHandler: 處理錯誤並提供友善提示
-    class ErrorHandler {
-        constructor(feedbackEngine) {
-            this.feedbackEngine = feedbackEngine;
-        }
-
-        handleEmptyInput() {
-            const input = document.getElementById('item-input');
-            this.feedbackEngine.showErrorHint(input, '請輸入餐點名稱！試試「漢堡」或「薯條」');
-        }
-
-        handleEmptyQueue() {
-            const dequeueBtn = document.getElementById('dequeue-btn');
-            this.feedbackEngine.animateAction(dequeueBtn, 'shake');
-            this.feedbackEngine.showToast('輸送帶是空的！請先加入一些餐點', 'error');
-
-            // 引導使用者到正確的操作
-            const enqueueBtn = document.getElementById('enqueue-btn');
-            this.feedbackEngine.highlightElement('#enqueue-btn', 2000);
-        }
-
-        handleWrongAction(expectedAction, currentStep) {
-            this.feedbackEngine.showToast(
-                `還沒到這一步喔！請先完成：${currentStep.text}`,
-                'info'
-            );
-        }
-    }
-
-    // InstructionPanel: 顯示步驟指引
-    class InstructionPanel {
-        constructor(containerId, steps) {
-            this.container = document.getElementById(containerId);
-            this.steps = steps;
-            this.currentStepIndex = 0;
-            this.render();
-        }
-
-        render() {
-            const stepsContainer = document.getElementById('instruction-steps');
-            if (!stepsContainer) return;
-
-            stepsContainer.innerHTML = '';
-            this.steps.forEach((step, index) => {
-                const li = document.createElement('li');
-                li.className = 'step';
-
-                if (index < this.currentStepIndex) {
-                    li.classList.add('completed');
-                } else if (index === this.currentStepIndex) {
-                    li.classList.add('active');
-                } else {
-                    li.classList.add('pending');
-                }
-
-                li.innerHTML = `
-                    <span class="step-icon"></span>
-                    <span class="step-text">${step.text}</span>
-                `;
-
-                stepsContainer.appendChild(li);
-            });
-
-            this.updateProgressBar();
-        }
-
-        updateProgressBar() {
-            const progressFill = document.getElementById('progress-fill');
-            if (!progressFill) return;
-
-            const progress = (this.currentStepIndex / this.steps.length) * 100;
-            progressFill.style.width = `${progress}%`;
-        }
-
-        nextStep() {
-            if (this.currentStepIndex < this.steps.length) {
-                this.currentStepIndex++;
-                this.render();
-            }
-        }
-
-        highlightStep(index) {
-            this.currentStepIndex = index;
-            this.render();
-        }
-
-        reset() {
-            this.currentStepIndex = 0;
-            this.render();
-        }
-
-        getCurrentStep() {
-            return this.steps[this.currentStepIndex];
-        }
-    }
-
-    // StateManager: 集中管理所有狀態
-    class StateManager {
-        constructor() {
-            this.state = {
-                currentModule: 'queue',
-                currentStep: 0,
-                completedSteps: [],
-                queueData: [],
-                practiceTasksCompleted: []
-            };
-            this.listeners = [];
-        }
-
-        setState(updates) {
-            this.state = { ...this.state, ...updates };
-            this.notifyListeners();
-        }
-
-        getState() {
-            return this.state;
-        }
-
-        subscribe(listener) {
-            this.listeners.push(listener);
-        }
-
-        notifyListeners() {
-            this.listeners.forEach(listener => listener(this.state));
-        }
-
-        saveToLocalStorage() {
-            try {
-                localStorage.setItem('gameState', JSON.stringify(this.state));
-            } catch (e) {
-                console.warn('無法儲存狀態到 localStorage');
-            }
-        }
-
-        loadFromLocalStorage() {
-            try {
-                const saved = localStorage.getItem('gameState');
-                if (saved) {
-                    this.state = { ...this.state, ...JSON.parse(saved) };
-                    this.notifyListeners();
-                }
-            } catch (e) {
-                console.warn('無法從 localStorage 載入狀態');
-            }
-        }
-
-        resetModule(moduleId) {
-            this.setState({
-                currentStep: 0,
-                completedSteps: [],
-                queueData: [],
-                practiceTasksCompleted: []
-            });
-            this.saveToLocalStorage();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // 初始化核心系統
-        const stateManager = new StateManager();
-        const feedbackEngine = new FeedbackEngine();
-        const errorHandler = new ErrorHandler(feedbackEngine);
-        stateManager.loadFromLocalStorage();
-
-        // --- 1. 頁面切換邏輯 ---
-        const navLinks = document.querySelectorAll('.nav-link');
-        const cards = document.querySelectorAll('.card');
-        const pages = document.querySelectorAll('.page');
-
-        function showPage(pageId) {
-            // 隱藏所有頁面
-            pages.forEach(page => page.classList.remove('active'));
-
-            // 顯示目標頁面
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.add('active');
-            }
-
-            // 更新導覽列的 active 狀態
-            navLinks.forEach(link => {
-                if (link.dataset.page === pageId) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
-                }
-            });
-        }
-
-        // 幫導覽列加上點擊事件
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault(); // 防止頁面跳轉
-                const pageId = e.target.dataset.page;
-                showPage(pageId);
-            });
-        });
-
-        // 幫首頁卡片加上點擊事件
-        cards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                const pageId = e.currentTarget.dataset.page;
-                showPage(pageId);
-            });
-        });
-
-        // --- 2. 佇列 (Queue) 遊戲邏輯 ---
-        const enqueueBtn = document.getElementById('enqueue-btn');
-        const dequeueBtn = document.getElementById('dequeue-btn');
-        const itemInput = document.getElementById('item-input');
-        const queueVisual = document.getElementById('queue-visual');
-
-        // 定義佇列遊戲的步驟
-        const queueSteps = [
-            { id: 1, text: '在輸入框輸入「漢堡」', action: 'input' },
-            { id: 2, text: '按下「放到輸送帶」按鈕', action: 'enqueue' },
-            { id: 3, text: '觀察餐點出現在輸送帶尾端', action: 'observe' },
-            { id: 4, text: '再加入「薯條」到輸送帶', action: 'enqueue' },
-            { id: 5, text: '按下「取餐給顧客」按鈕', action: 'dequeue' },
-            { id: 6, text: '觀察最先加入的餐點被取走', action: 'complete' }
-        ];
-
-        // 初始化操作指引面板
-        let instructionPanel = null;
-        if (document.getElementById('queue-instructions')) {
-            instructionPanel = new InstructionPanel('queue-instructions', queueSteps);
-        }
-
-        // 展開/收合說明按鈕
-        const expandBtn = document.getElementById('expand-btn');
-        const explanationContent = document.getElementById('explanation-content');
-        if (expandBtn && explanationContent) {
-            expandBtn.addEventListener('click', () => {
-                explanationContent.classList.toggle('show');
-                expandBtn.textContent = explanationContent.classList.contains('show')
-                    ? '💡 收起說明'
-                    : '💡 為什麼這樣做？';
-            });
-        }
-
-        // 重置按鈕
-        const resetBtn = document.getElementById('reset-btn');
-        if (resetBtn && instructionPanel) {
-            resetBtn.addEventListener('click', () => {
-                if (confirm('確定要重新開始嗎？')) {
-                    instructionPanel.reset();
-                    queueVisual.innerHTML = '';
-                    itemInput.value = '';
-                    feedbackEngine.showToast('已重置！讓我們重新開始', 'info');
-                }
-            });
-        }
-
-        // Enqueue (入隊)
-        enqueueBtn.addEventListener('click', () => {
-            const itemName = itemInput.value.trim();
-            if (itemName === "") {
-                errorHandler.handleEmptyInput();
-                return;
-            }
-
-            // 建立一個新的 "餐點" div
-            const newItem = document.createElement('div');
-            newItem.classList.add('queue-item');
-            newItem.textContent = itemName;
-
-            // 加到輸送帶 (佇列) 的尾端
-            queueVisual.appendChild(newItem);
-
-            // 顯示成功訊息
-            feedbackEngine.showToast(`太棒了！「${itemName}」已加入輸送帶`, 'success');
-
-            // 高亮尾端標籤
-            feedbackEngine.highlightElement('#label-rear', 1000);
-
-            // 推進步驟
-            if (instructionPanel) {
-                const currentStep = instructionPanel.getCurrentStep();
-                if (currentStep && currentStep.action === 'enqueue') {
-                    setTimeout(() => {
-                        instructionPanel.nextStep();
-                        if (instructionPanel.currentStepIndex < queueSteps.length) {
-                            feedbackEngine.showToast('很好！繼續下一步', 'info', 2000);
-                        }
-                    }, 500);
-                }
-            }
-
-            itemInput.value = ""; // 清空輸入框
-        });
-
-        // Dequeue (出隊)
-        dequeueBtn.addEventListener('click', () => {
-            // 檢查輸送帶上是否有餐點
-            if (queueVisual.firstElementChild) {
-                const itemName = queueVisual.firstElementChild.textContent;
-                // 移除 "第一個" (最前面) 的餐點
-                queueVisual.firstElementChild.remove();
-                feedbackEngine.showToast(`「${itemName}」已送給顧客！`, 'success');
-
-                // 高亮前端標籤
-                feedbackEngine.highlightElement('#label-front', 1000);
-
-                // 推進步驟
-                if (instructionPanel) {
-                    const currentStep = instructionPanel.getCurrentStep();
-                    if (currentStep && currentStep.action === 'dequeue') {
-                        setTimeout(() => {
-                            instructionPanel.nextStep();
-                            if (instructionPanel.currentStepIndex >= queueSteps.length) {
-                                feedbackEngine.showToast('🎉 恭喜！你已完成佇列關卡！', 'success', 4000);
-                            }
-                        }, 500);
-                    }
-                }
-            } else {
-                errorHandler.handleEmptyQueue();
-            }
-        });
-
-        // 監聽輸入框，推進步驟
-        if (itemInput && instructionPanel) {
-            itemInput.addEventListener('input', () => {
-                const currentStep = instructionPanel.getCurrentStep();
-                if (currentStep && currentStep.action === 'input' && itemInput.value.trim().length > 0) {
-                    setTimeout(() => {
-                        instructionPanel.nextStep();
-                        feedbackEngine.showToast('很好！現在按下按鈕', 'info', 2000);
-                    }, 300);
-                }
-            });
-        }
-    });
-</script>
-
+    <script type="module" src="main-auth.js"></script>
 </body>
 </html>
