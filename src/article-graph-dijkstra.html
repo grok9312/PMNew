@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖論與最短路徑：複雜網絡的導航者</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            line-height: 1.8;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--squid-pink);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.3);
+            position: relative;
+        }
+        h1 {
+            color: var(--squid-cyan);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+        h2 {
+            color: var(--squid-pink);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        p {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 2rem;
+        }
+        .back-button:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 15px var(--squid-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>圖論與最短路徑：複雜網絡的導航者</h1>
+        <h2>Dijkstra 演算法的應用</h2>
+        <p>理解圖的構成，以及 Dijkstra 演算法如何在高鐵路線、網路路由中找到最佳路徑。圖論是數學的一個分支，用於研究點（節點）和連接這些點的線（邊）組成的結構。它在電腦科學中應用廣泛，尤其是在網路、地圖導航和社交關係分析等領域。</p>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/pVfj6m_2_g8" allowfullscreen></iframe>
+        </div>
+        <p>本影片將介紹圖的基本概念，並深入探討 Dijkstra 演算法，解釋它是如何有效地找出兩個節點之間的最短路徑。</p>
+    </div>
+    <a href="index.html" class="back-button">返回首頁</a>
+</body>
+</html>

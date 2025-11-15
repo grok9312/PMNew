@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打地鼠挑戰 - Queue</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .playground-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            height: 100vh;
+        }
+
+        /* 左側：教學 */
+        .sidebar {
+            background: linear-gradient(135deg, #2d1a2d 0%, #1a0a1a 100%);
+            border-right: 3px solid var(--squid-pink);
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        .tutorial-box {
+            background: rgba(255, 20, 147, 0.1);
+            border: 2px solid var(--squid-pink);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tutorial-box h3 {
+            color: var(--squid-pink);
+            margin-bottom: 1rem;
+        }
+        .tutorial-box p {
+            line-height: 1.8;
+            color: #ddd;
+        }
+        .tutorial-box strong {
+            color: var(--squid-cyan);
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none; /* 預設隱藏 */
+        }
+        .modal-content {
+            background: var(--squid-dark);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 3px solid var(--squid-cyan);
+            box-shadow: 0 0 40px var(--squid-cyan);
+            width: 500px;
+            text-align: center;
+        }
+        .modal-content h2 {
+            color: var(--squid-cyan);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 中間：遊戲區 */
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            gap: 1.5rem;
+        }
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--squid-pink) 0%, #c71585 100%);
+            color: #000;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+        }
+        .game-header h1 {
+            color: #000;
+            text-shadow: none;
+        }
+        .game-info {
+            display: flex;
+            gap: 2rem;
+            font-size: 1.5rem;
+        }
+        .game-info span {
+            font-weight: bold;
+        }
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 20px;
+        }
+        .hole {
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            border-radius: 50%;
+            border: 5px solid #555;
+            position: relative;
+            overflow: visible; /* 讓數字可以超出洞口 */
+            cursor: pointer;
+        }
+        .hole.up .mole {
+            bottom: 0;
+        }
+        .mole {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            transition: bottom 0.2s;
+            font-size: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mole-number {
+            position: absolute;
+            top: -5px; /* 調整位置 */
+            right: -5px; /* 調整位置 */
+            background: var(--squid-pink);
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 900;
+            z-index: 1;
+        }
+        .queue-display {
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border: 2px solid var(--squid-cyan);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .queue-display h3 {
+            color: var(--squid-cyan);
+            margin-bottom: 0.5rem;
+        }
+        .queue-line {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+        .mole-in-queue {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .mole-in-queue .mole-number {
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+        }
+        .mole-in-queue.first {
+            border: 3px solid var(--squid-green);
+        }
+        #start-btn {
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #start-btn:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 20px var(--squid-cyan);
+        }
+        #start-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* 右側：狀態 */
+        .tasks-panel {
+            background: linear-gradient(135deg, #2d1a2d 0%, #1a0a1a 100%);
+            border-left: 3px solid var(--squid-pink);
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        .status-box, .history-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(255, 20, 147, 0.3);
+        }
+        .tasks-panel h3 {
+            color: var(--squid-pink);
+            margin-bottom: 1rem;
+        }
+        .history-item {
+            background: rgba(255, 20, 147, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--squid-cyan);
+        }
+        .history-item.success {
+            border-left-color: var(--squid-green);
+        }
+        .history-item.fail {
+            border-left-color: #ff0000;
+        }
+        .back-button {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 20, 147, 0.3);
+            border: 2px solid var(--squid-pink);
+            color: var(--squid-pink);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        .back-button:hover {
+            background: var(--squid-pink);
+            color: #000;
+        }
+
+        /* 過關頁面 */
+        #end-game-modal .modal-content {
+            background: var(--squid-dark);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 3px solid var(--squid-pink);
+            text-align: center;
+            box-shadow: 0 0 40px var(--squid-pink);
+        }
+        #end-game-modal h2 {
+            font-size: 2.5rem;
+            color: var(--squid-pink);
+            margin-bottom: 1rem;
+        }
+        #end-game-modal p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        #end-game-modal .final-score {
+            color: var(--squid-cyan);
+            font-weight: bold;
+            font-size: 2rem;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .modal-buttons .btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            line-height: 1.5;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .btn-replay {
+            background: var(--squid-green);
+            color: #000;
+        }
+        .btn-next {
+            background: var(--squid-cyan);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="playground-container">
+        <!-- 左側：教學 -->
+        <div class="sidebar">
+            <a href="index.html" class="back-button" title="返回主選單">🏠</a>
+            <div class="tutorial-box" style="margin-top: 4rem;">
+                <h3>📖 遊戲規則</h3>
+                <p><strong>1️⃣ 地鼠會依序出現</strong><br>地鼠會隨機從洞裡冒出來，並加入佇列排隊。</p>
+                <p><strong>2️⃣ 必須按順序打擊</strong><br>只能打<strong>最先出現</strong>的地鼠（佇列最前面的）。</p>
+                <p><strong>3️⃣ 打錯會扣分</strong><br>如果打到不是第一個的地鼠，或點到空地，都會被扣分！</p>
+            </div>
+            <div class="tutorial-box">
+                <h3>💡 學習重點: Queue</h3>
+                <p><strong>Queue (佇列)</strong> 就像排隊：</p>
+                <p>• 新的元素從<strong>後面</strong>加入 (Enqueue)</p>
+                <p>• 處理時從<strong>前面</strong>開始 (Dequeue)</p>
+                <p>• 不能插隊或跳過，這就是 <strong>先進先出 (FIFO)</strong>。</p>
+            </div>
+        </div>
+
+        <!-- 中間：遊戲區 -->
+        <div class="game-area">
+            <div class="game-header">
+                <h1>打地鼠挑戰</h1>
+                <div class="game-info">
+                    <div>分數: <span id="score">0</span></div>
+                    <div>時間: <span id="timer">30</span>s</div>
+                </div>
+            </div>
+            <div class="game-container">
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+                <div class="hole"><div class="mole"></div></div>
+            </div>
+            <div class="queue-display">
+                <h3>地鼠佇列 (Queue)</h3>
+                <div class="queue-line" id="queue-line"></div>
+            </div>
+            <button id="start-btn">開始遊戲</button>
+        </div>
+
+        <!-- 右側：狀態 -->
+        <div class="tasks-panel">
+            <div class="status-box">
+                <h3>📊 遊戲狀態</h3>
+                <div id="game-status"><p>遊戲尚未開始</p></div>
+            </div>
+            <div class="history-box">
+                <h3>📋 操作記錄</h3>
+                <div id="history"><p style="color: #666; text-align: center;">還沒有記錄</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 過關頁面 -->
+    <div class="modal-overlay" id="end-game-modal">
+        <div class="modal-content">
+            <h2>遊戲結束！</h2>
+            <p>你的最終分數是: <span class="final-score" id="final-score">0</span></p>
+            <div class="modal-buttons">
+                <button class="btn btn-replay" id="replay-btn">重新開始</button>
+                <a href="stack-game.html" class="btn btn-next">前往下一關</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const holes = document.querySelectorAll('.hole');
+        const scoreBoard = document.getElementById('score');
+        const timerBoard = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const queueLine = document.getElementById('queue-line');
+        const gameStatus = document.getElementById('game-status');
+        const historyLog = document.getElementById('history');
+        const endGameModal = document.getElementById('end-game-modal');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const replayBtn = document.getElementById('replay-btn');
+
+        let moleQueue = [];
+        let score = 0;
+        let timeUp = false;
+        let gameTime = 30; // 預設遊戲時間
+        let peepInterval = null;
+        let timerInterval = null;
+        let moleCounter = 1;
+
+        function addHistory(message, type) {
+            if (historyLog.querySelector('p')) {
+                historyLog.innerHTML = '';
+            }
+            const item = document.createElement('div');
+            item.className = `history-item ${type}`;
+            item.textContent = message;
+            historyLog.insertBefore(item, historyLog.firstChild);
+            if (historyLog.children.length > 10) {
+                historyLog.removeChild(historyLog.lastChild);
+            }
+        }
+
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        function randomHole() {
+            const activeHoles = Array.from(holes).filter(hole => !hole.classList.contains('up'));
+            if (activeHoles.length === 0) return null;
+            const idx = Math.floor(Math.random() * activeHoles.length);
+            return activeHoles[idx];
+        }
+
+        function peep() {
+            const hole = randomHole();
+            if (!hole) return;
+
+            const moleId = moleCounter++;
+            hole.dataset.moleId = String(moleId);
+            const mole = hole.querySelector('.mole');
+            mole.innerHTML = `🐹<span class="mole-number">#${moleId}</span>`;
+            
+            hole.classList.add('up');
+            moleQueue.push(hole);
+            updateQueueDisplay();
+            addHistory(`地鼠 #${moleId} 出現並加入佇列`, 'info');
+
+            const time = randomTime(1200, 2000);
+            setTimeout(() => {
+                const index = moleQueue.indexOf(hole);
+                if (index !== -1 && !timeUp) {
+                     hole.classList.remove('up');
+                     hole.querySelector('.mole').innerHTML = '';
+                     moleQueue.splice(index, 1);
+                     updateQueueDisplay();
+                     addHistory(`地鼠 #${moleId} 等太久跑掉了`, 'fail');
+                }
+            }, time);
+        }
+
+        function whack(e) {
+            if (!e.isTrusted || timeUp) return;
+
+            const moleId = this.dataset.moleId;
+
+            if (!this.classList.contains('up')) {
+                score -= 2;
+                addHistory('點到空的洞！扣 2 分', 'fail');
+            } else if (this === moleQueue[0]) {
+                score += 10;
+                this.classList.remove('up');
+                this.querySelector('.mole').innerHTML = '';
+                moleQueue.shift();
+                addHistory(`正確打擊地鼠 #${moleId}！加 10 分`, 'success');
+            } else {
+                const correctMoleId = moleQueue[0].dataset.moleId;
+                score -= 5;
+                this.classList.remove('up');
+                this.querySelector('.mole').innerHTML = '';
+                const index = moleQueue.indexOf(this);
+                if(index !== -1) {
+                    moleQueue.splice(index, 1);
+                }
+                addHistory(`打錯順序了！應打 #${correctMoleId}，扣 5 分`, 'fail');
+            }
+            
+            scoreBoard.textContent = String(score);
+            updateQueueDisplay();
+        }
+
+        function updateQueueDisplay() {
+            queueLine.innerHTML = '';
+            moleQueue.forEach((hole, index) => {
+                const moleId = hole.dataset.moleId;
+                const moleDiv = document.createElement('div');
+                moleDiv.classList.add('mole-in-queue');
+                moleDiv.innerHTML = `🐹<span class="mole-number">#${moleId}</span>`;
+                if (index === 0) {
+                    moleDiv.classList.add('first');
+                }
+                queueLine.appendChild(moleDiv);
+            });
+        }
+
+        function startGame() {
+            endGameModal.style.display = 'none';
+            score = 0;
+            moleQueue = [];
+            timeUp = false;
+            moleCounter = 1;
+            let timeLeft = gameTime;
+
+            scoreBoard.textContent = String(score);
+            timerBoard.textContent = String(timeLeft);
+            startBtn.disabled = true;
+            gameStatus.innerHTML = '<p style="color: var(--squid-green);">遊戲進行中...</p>';
+            historyLog.innerHTML = '';
+            updateQueueDisplay();
+
+            peepInterval = setInterval(peep, 1200);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerBoard.textContent = String(timeLeft);
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            timeUp = true;
+            clearInterval(peepInterval);
+            clearInterval(timerInterval);
+            startBtn.disabled = false;
+            gameStatus.innerHTML = `<p style="color: var(--squid-cyan);">遊戲結束！最終分數: ${score}</p>`;
+            
+            holes.forEach(hole => {
+                hole.classList.remove('up');
+                hole.querySelector('.mole').innerHTML = '';
+            });
+
+            finalScoreDisplay.textContent = String(score);
+            endGameModal.style.display = 'flex';
+        }
+
+        startBtn.addEventListener('click', startGame);
+        replayBtn.addEventListener('click', startGame);
+
+        holes.forEach(hole => hole.addEventListener('click', whack));
+    </script>
+</body>
+</html>

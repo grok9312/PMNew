@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演算法概論：程式設計的靈魂</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            line-height: 1.8;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--squid-pink);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.3);
+            position: relative;
+        }
+        h1 {
+            color: var(--squid-cyan);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+        h2 {
+            color: var(--squid-pink);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        p {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 2rem;
+        }
+        .back-button:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 15px var(--squid-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>演算法概論：程式設計的靈魂</h1>
+        <h2>從概念到應用</h2>
+        <p>深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。演算法是解決問題的步驟序列，是電腦科學的基石，也是我們日常生活中許多便利服務背後的智慧。</p>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/k_yB2h_B_i8" allowfullscreen></iframe>
+        </div>
+        <p>透過這段影片，您將對演算法有更全面的認識，了解它不僅僅是程式碼，更是一種思維方式。</p>
+    </div>
+    <a href="index.html" class="back-button">返回首頁</a>
+</body>
+</html>
