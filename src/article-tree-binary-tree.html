@@ -46,10 +46,25 @@
             text-align: center;
             margin-bottom: 2rem;
         }
+        h3 {
+            color: var(--squid-green);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
         p {
             color: #ddd;
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
+        }
+        ul {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
         }
         .video-container {
             position: relative;
@@ -95,7 +110,48 @@
     <div class="container">
         <h1>樹狀結構與二元樹：階層數據的完美呈現</h1>
         <h2>從家譜到搜尋引擎</h2>
-        <p>探索樹的各種形態，特別是二元樹的搜尋、插入與刪除操作。樹狀結構是一種非線性的數據結構，它以分層的方式組織數據，非常適合表示具有層次關係的數據，例如文件系統、組織架構或家譜。</p>
+        <p>樹狀結構是一種非線性的資料結構，它以分層的方式組織數據，非常適合表示具有層次關係的數據，例如文件系統、組織架構或家譜。在電腦科學中，樹被廣泛應用於資料庫索引、編譯器設計和網路路由等領域。</p>
+
+        <h3>樹的基本概念</h3>
+        <ul>
+            <li><strong>節點 (Node)</strong>：樹的基本組成單位，包含數據和指向其子節點的指針。</li>
+            <li><strong>根節點 (Root Node)</strong>：樹的最頂端節點，沒有父節點。</li>
+            <li><strong>父節點 (Parent Node)</strong>：直接位於某節點上方的節點。</li>
+            <li><strong>子節點 (Child Node)</strong>：直接位於某節點下方的節點。</li>
+            <li><strong>葉節點 (Leaf Node)</strong>：沒有子節點的節點。</li>
+            <li><strong>邊 (Edge)</strong>：連接兩個節點的線。</li>
+            <li><strong>深度 (Depth)</strong>：從根節點到某節點的路徑長度。</li>
+            <li><strong>高度 (Height)</strong>：從某節點到其最遠葉節點的最長路徑長度。</li>
+        </ul>
+
+        <h3>二元樹 (Binary Tree)</h3>
+        <p>二元樹是樹狀結構中最常見的一種，它的每個節點最多只有兩個子節點，通常稱為左子節點和右子節點。</p>
+        <ul>
+            <li><strong>二元搜尋樹 (Binary Search Tree, BST)</strong>：
+                <p>一種特殊的二元樹，對於任意節點，其左子樹中所有節點的值都小於該節點的值，而右子樹中所有節點的值都大於該節點的值。這使得二元搜尋樹非常適合進行高效的搜尋、插入和刪除操作。</p>
+            </li>
+            <li><strong>平衡二元樹 (Balanced Binary Tree)</strong>：
+                <p>為了避免二元搜尋樹在最壞情況下退化成鏈結串列（導致效率降低），平衡二元樹會確保樹的高度保持在一定範圍內，例如 AVL 樹、紅黑樹。</p>
+            </li>
+        </ul>
+
+        <h3>二元樹的遍歷 (Traversal)</h3>
+        <p>遍歷是指按照特定順序訪問樹中所有節點的過程。常見的二元樹遍歷方式有：</p>
+        <ul>
+            <li><strong>前序遍歷 (Pre-order Traversal)</strong>：根節點 -> 左子樹 -> 右子樹。</li>
+            <li><strong>中序遍歷 (In-order Traversal)</strong>：左子樹 -> 根節點 -> 右子樹。對於二元搜尋樹，中序遍歷會得到一個排序好的序列。</li>
+            <li><strong>後序遍歷 (Post-order Traversal)</strong>：左子樹 -> 右子樹 -> 根節點。</li>
+            <li><strong>層次遍歷 (Level-order Traversal)</strong>：從上到下，從左到右，逐層訪問節點。</li>
+        </ul>
+
+        <h3>應用場景</h3>
+        <ul>
+            <li><strong>資料庫索引</strong>：B 樹和 B+ 樹是資料庫中常用的索引結構，能快速檢索數據。</li>
+            <li><strong>檔案系統</strong>：目錄和子目錄的組織方式。</li>
+            <li><strong>編譯器</strong>：語法樹 (Parse Tree) 用於表示程式碼的結構。</li>
+            <li><strong>決策樹</strong>：機器學習中用於分類和回歸的模型。</li>
+        </ul>
+
         <div class="video-container">
             <iframe src="https://www.youtube.com/embed/oSWTXtM63nY" allowfullscreen></iframe>
         </div>
