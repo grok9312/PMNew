@@ -46,28 +46,25 @@
             text-align: center;
             margin-bottom: 2rem;
         }
+        h3 {
+            color: var(--squid-green);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
         p {
             color: #ddd;
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
         }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        ul {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding-left: 1.5rem;
         }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+        li {
+            margin-bottom: 0.5rem;
         }
         .back-button {
             display: inline-flex;
@@ -95,11 +92,53 @@
     <div class="container">
         <h1>佇列與堆疊：先進先出與後進先出</h1>
         <h2>兩種基本數據結構的應用</h2>
-        <p>透過生活實例，理解佇列 (Queue) 和堆疊 (Stack) 的運作原理及其在程式中的應用。這兩種數據結構是電腦科學中最基礎且廣泛使用的概念，它們定義了數據的存取順序。</p>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/wjI1WuxB72Y" allowfullscreen></iframe>
-        </div>
-        <p>本影片將深入淺出地介紹佇列和堆疊的特性，並透過實際案例幫助您掌握它們的應用場景。</p>
+        <p>佇列 (Queue) 和堆疊 (Stack) 是兩種最基本且廣泛使用的線性資料結構，它們定義了數據的存取順序。理解它們的運作原理對於編寫高效且邏輯清晰的程式碼至關重要。</p>
+
+        <h3>佇列 (Queue) - 先進先出 (FIFO)</h3>
+        <p>想像一下在銀行排隊的隊伍：最先排隊的人會最先獲得服務。佇列的運作方式與此類似。</p>
+        <ul>
+            <li><strong>特性</strong>：數據的插入 (Enqueue) 發生在隊伍的「尾部」，而數據的刪除 (Dequeue) 發生在隊伍的「頭部」。</li>
+            <li><strong>操作</strong>：
+                <ul>
+                    <li><strong>Enqueue (入隊)</strong>：將元素添加到佇列的末尾。</li>
+                    <li><strong>Dequeue (出隊)</strong>：從佇列的開頭移除元素。</li>
+                    <li><strong>Peek/Front</strong>：查看佇列頭部的元素，但不移除。</li>
+                    <li><strong>IsEmpty</strong>：檢查佇列是否為空。</li>
+                </ul>
+            </li>
+            <li><strong>應用場景</strong>：
+                <ul>
+                    <li>任務排程：作業系統中的行程排程。</li>
+                    <li>印表機佇列：文件按照提交順序列印。</li>
+                    <li>廣度優先搜尋 (BFS) 演算法。</li>
+                    <li>緩衝區 (Buffer) 管理。</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>堆疊 (Stack) - 後進先出 (LIFO)</h3>
+        <p>想像一下一疊盤子：您只能從最上面放盤子，也只能從最上面拿盤子。堆疊的運作方式與此類似。</p>
+        <ul>
+            <li><strong>特性</strong>：數據的插入 (Push) 和刪除 (Pop) 都發生在堆疊的「頂部」。</li>
+            <li><strong>操作</strong>：
+                <ul>
+                    <li><strong>Push (入棧)</strong>：將元素添加到堆疊的頂部。</li>
+                    <li><strong>Pop (出棧)</strong>：從堆疊的頂部移除元素。</li>
+                    <li><strong>Peek/Top</strong>：查看堆疊頂部的元素，但不移除。</li>
+                    <li><strong>IsEmpty</strong>：檢查堆疊是否為空。</li>
+                </ul>
+            </li>
+            <li><strong>應用場景</strong>：
+                <ul>
+                    <li>函數呼叫堆疊：程式執行時，函數的呼叫順序。</li>
+                    <li>瀏覽器歷史記錄：後退按鈕的功能。</li>
+                    <li>撤銷 (Undo) / 重做 (Redo) 功能。</li>
+                    <li>深度優先搜尋 (DFS) 演算法。</li>
+                    <li>括號匹配檢查。</li>
+                </ul>
+            </li>
+        </ul>
+        <p>佇列和堆疊作為兩種基礎的資料結構，在電腦科學中扮演著不可或缺的角色。理解它們的特性和應用場景，是掌握更複雜演算法和系統設計的基石。</p>
     </div>
     <a href="index.html" class="back-button">返回首頁</a>
 </body>

@@ -46,28 +46,25 @@
             text-align: center;
             margin-bottom: 2rem;
         }
+        h3 {
+            color: var(--squid-green);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
         p {
             color: #ddd;
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
         }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        ul {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding-left: 1.5rem;
         }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+        li {
+            margin-bottom: 0.5rem;
         }
         .back-button {
             display: inline-flex;
@@ -95,11 +92,74 @@
     <div class="container">
         <h1>演算法概論：程式設計的靈魂</h1>
         <h2>從概念到應用</h2>
-        <p>深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。演算法是解決問題的步驟序列，是電腦科學的基石，也是我們日常生活中許多便利服務背後的智慧。</p>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/k_yB2h_B_i8" allowfullscreen></iframe>
-        </div>
-        <p>透過這段影片，您將對演算法有更全面的認識，了解它不僅僅是程式碼，更是一種思維方式。</p>
+        <p>演算法是電腦科學的基石，也是解決問題的精確步驟序列。它不僅僅是程式碼，更是一種思維方式，指導我們如何有效地處理資訊、解決複雜的挑戰。從搜尋引擎的結果排序到社交媒體的推薦系統，演算法無處不在，驅動著現代科技的運作。</p>
+
+        <h3>什麼是演算法？</h3>
+        <p>簡單來說，演算法就是一套明確的指令，用來執行特定任務或解決特定問題。它必須具備以下特性：</p>
+        <ul>
+            <li><strong>明確性 (Unambiguous)</strong>：每一步指令都必須清晰無誤，沒有歧義。</li>
+            <li><strong>輸入 (Input)</strong>：接受零個或多個輸入值，這些值是演算法處理的對象。</li>
+            <li><strong>輸出 (Output)</strong>：產生一個或多個輸出值，這些值是演算法處理的結果。</li>
+            <li><strong>有限性 (Finiteness)</strong>：演算法必須在有限的步驟後結束，不能無限循環。</li>
+            <li><strong>有效性 (Effectiveness)</strong>：每一步操作都必須是基本且可行的，理論上可以用筆和紙完成。</li>
+        </ul>
+
+        <h3>演算法的重要性</h3>
+        <p>在資訊爆炸的時代，演算法的重要性不言而喻：</p>
+        <ul>
+            <li><strong>提升效率</strong>：好的演算法能夠在最短的時間內，用最少的資源（如記憶體）解決問題。這是衡量演算法優劣的關鍵指標。</li>
+            <li><strong>自動化</strong>：讓機器能夠自動執行複雜的任務，減少人為錯誤，提高生產力。</li>
+            <li><strong>創新</strong>：許多科技突破都源於新的演算法發明，例如人工智慧、機器學習、大數據分析等領域的發展都離不開演算法的進步。</li>
+            <li><strong>優化決策</strong>：幫助我們在各種情境下做出最佳決策，例如物流路線規劃、金融交易策略、資源分配等。</li>
+            <li><strong>理解問題</strong>：設計演算法的過程本身就是對問題進行深入分析和理解的過程。</li>
+        </ul>
+
+        <h3>演算法的分類</h3>
+        <p>演算法種類繁多，可以根據其解決問題的方法或應用領域進行分類：</p>
+        <ul>
+            <li><strong>排序演算法 (Sorting Algorithms)</strong>：
+                <p>用於將數據依特定順序（如升序或降序）排列。常見的包括氣泡排序、選擇排序、插入排序、快速排序、合併排序等。</p>
+            </li>
+            <li><strong>搜尋演算法 (Searching Algorithms)</strong>：
+                <p>用於在數據集合中查找特定元素。例如線性搜尋、二元搜尋等。</p>
+            </li>
+            <li><strong>圖形演算法 (Graph Algorithms)</strong>：
+                <p>用於處理圖結構數據，解決路徑尋找、網絡分析、最小生成樹等問題。例如 Dijkstra 演算法、廣度優先搜尋 (BFS)、深度優先搜尋 (DFS) 等。</p>
+            </li>
+            <li><strong>動態規劃 (Dynamic Programming)</strong>：
+                <p>透過將問題分解為子問題，並儲存子問題的解，避免重複計算，從而解決具有重疊子問題和最佳子結構性質的問題。</p>
+            </li>
+            <li><strong>貪婪演算法 (Greedy Algorithms)</strong>：
+                <p>在每一步選擇中都採取在當前狀態下最好或最優的選擇，從而希望導致結果是全局最好或最優的演算法。但貪婪演算法不一定能得到全局最優解。</p>
+            </li>
+            <li><strong>分治演算法 (Divide and Conquer Algorithms)</strong>：
+                <p>將一個大的問題分解成若干個相互獨立的、與原問題類型相同的子問題，然後遞歸地解決這些子問題，最後將子問題的解合併得到原問題的解。例如快速排序、合併排序。</p>
+            </li>
+        </ul>
+
+        <h3>如何評估演算法？</h3>
+        <p>評估演算法的優劣主要從以下兩個方面考量：</p>
+        <ul>
+            <li><strong>時間複雜度 (Time Complexity)</strong>：
+                <p>衡量演算法執行時間與輸入數據量之間的關係。通常使用大 O 符號 (Big O notation) 表示，例如 O(n)、O(n log n)、O(n²)。</p>
+            </li>
+            <li><strong>空間複雜度 (Space Complexity)</strong>：
+                <p>衡量演算法執行過程中所需的記憶體空間與輸入數據量之間的關係。同樣使用大 O 符號表示。</p>
+            </li>
+        </ul>
+        <p>一個好的演算法應該在時間和空間上都盡可能高效。</p>
+
+        <h3>實際應用範例</h3>
+        <p>演算法在我們的日常生活中無處不在：</p>
+        <ul>
+            <li><strong>Google 搜尋引擎</strong>：背後的 PageRank 演算法決定了搜尋結果的排名，讓您能快速找到所需資訊。</li>
+            <li><strong>GPS 導航系統</strong>：利用最短路徑演算法（如 Dijkstra）規劃從起點到終點的最佳行車路線，考慮時間、距離或交通狀況。</li>
+            <li><strong>社群媒體推薦</strong>：演算法分析您的興趣、行為和社交關係，推薦您可能喜歡的內容、朋友或商品。</li>
+            <li><strong>線上購物平台</strong>：推薦演算法根據您的瀏覽和購買歷史，推薦相關商品，提升購物體驗。</li>
+            <li><strong>數據壓縮技術</strong>：演算法將大文件（如圖片、影片）壓縮成小文件，方便儲存和傳輸，例如 JPEG、MP4 等格式。</li>
+            <li><strong>金融交易</strong>：高頻交易演算法在毫秒級別內分析市場數據並執行交易。</li>
+        </ul>
+        <p>透過學習演算法，您將不僅學會解決問題的工具，更將培養出邏輯思維和分析能力，這對於任何領域的學習和工作都至關重要。</p>
     </div>
     <a href="index.html" class="back-button">返回首頁</a>
 </body>
