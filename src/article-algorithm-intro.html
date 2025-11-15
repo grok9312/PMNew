@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演算法概論：程式設計的靈魂</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            line-height: 1.8;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--squid-pink);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.3);
+            position: relative;
+        }
+        h1 {
+            color: var(--squid-cyan);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+        h2 {
+            color: var(--squid-pink);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h3 {
+            color: var(--squid-green);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        ul {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 2rem;
+        }
+        .back-button:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 15px var(--squid-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>演算法概論：程式設計的靈魂</h1>
+        <h2>從概念到應用</h2>
+        <p>演算法是電腦科學的基石，也是解決問題的精確步驟序列。它不僅僅是程式碼，更是一種思維方式，指導我們如何有效地處理資訊、解決複雜的挑戰。從搜尋引擎的結果排序到社交媒體的推薦系統，演算法無處不在，驅動著現代科技的運作。</p>
+
+        <h3>什麼是演算法？</h3>
+        <p>簡單來說，演算法就是一套明確的指令，用來執行特定任務或解決特定問題。它必須具備以下特性：</p>
+        <ul>
+            <li><strong>明確性 (Unambiguous)</strong>：每一步指令都必須清晰無誤。</li>
+            <li><strong>輸入 (Input)</strong>：接受零個或多個輸入。</li>
+            <li><strong>輸出 (Output)</strong>：產生一個或多個輸出。</li>
+            <li><strong>有限性 (Finiteness)</strong>：演算法必須在有限的步驟後結束。</li>
+            <li><strong>有效性 (Effectiveness)</strong>：每一步操作都必須是基本且可行的。</li>
+        </ul>
+
+        <h3>演算法的重要性</h3>
+        <p>在資訊爆炸的時代，演算法的重要性不言而喻：</p>
+        <ul>
+            <li><strong>效率</strong>：好的演算法能夠在最短的時間內，用最少的資源解決問題。</li>
+            <li><strong>自動化</strong>：讓機器能夠自動執行複雜的任務，減少人為錯誤。</li>
+            <li><strong>創新</strong>：許多科技突破都源於新的演算法發明，例如人工智慧、大數據分析等。</li>
+            <li><strong>優化</strong>：幫助我們在各種情境下做出最佳決策，例如物流路線規劃、金融交易策略。</li>
+        </ul>
+
+        <h3>演算法的分類</h3>
+        <p>演算法種類繁多，常見的分類方式包括：</p>
+        <ul>
+            <li><strong>排序演算法 (Sorting Algorithms)</strong>：如氣泡排序、快速排序、合併排序等，用於將數據依特定順序排列。</li>
+            <li><strong>搜尋演算法 (Searching Algorithms)</strong>：如線性搜尋、二元搜尋等，用於在數據集合中查找特定元素。</li>
+            <li><strong>圖形演算法 (Graph Algorithms)</strong>：如 Dijkstra 演算法、BFS、DFS 等，用於處理圖結構數據，解決路徑尋找、網絡分析等問題。</li>
+            <li><strong>動態規劃 (Dynamic Programming)</strong>：透過將問題分解為子問題並儲存子問題的解，避免重複計算。</li>
+            <li><strong>貪婪演算法 (Greedy Algorithms)</strong>：在每一步選擇中都採取在當前狀態下最好或最優的選擇，從而希望導致結果是全局最好或最優的演算法。</li>
+        </ul>
+
+        <h3>實際應用範例</h3>
+        <p>演算法在我們的日常生活中無處不在：</p>
+        <ul>
+            <li><strong>Google 搜尋</strong>：背後的 PageRank 演算法決定了搜尋結果的排名。</li>
+            <li><strong>GPS 導航</strong>：利用最短路徑演算法（如 Dijkstra）規劃最佳行車路線。</li>
+            <li><strong>社群媒體推薦</strong>：演算法分析您的興趣，推薦您可能喜歡的內容或朋友。</li>
+            <li><strong>線上購物</strong>：推薦演算法根據您的瀏覽和購買歷史，推薦商品。</li>
+            <li><strong>數據壓縮</strong>：演算法將大文件壓縮成小文件，方便儲存和傳輸。</li>
+        </ul>
+
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/k_yB2h_B_i8" allowfullscreen></iframe>
+        </div>
+        <p>透過這段影片，您將對演算法有更全面的認識，了解它不僅僅是程式碼，更是一種解決問題的強大工具和思維方式。</p>
+    </div>
+    <a href="index.html" class="back-button">返回首頁</a>
+</body>
+</html>
