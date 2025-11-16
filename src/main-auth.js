@@ -7,6 +7,9 @@ const playerAuthContainer = document.getElementById('player-auth-container');
  * @param {User|null} user - Firebase 的使用者物件，如果未登入則為 null
  */
 function updateUserUI(user) {
+  // 如果頁面上沒有這個容器，就直接返回
+  if (!playerAuthContainer) return;
+  
   // 清空容器
   playerAuthContainer.innerHTML = '';
 
@@ -31,7 +34,16 @@ function updateUserUI(user) {
   }
 }
 
-// 監聽驗證狀態的變化，並在狀態改變時更新 UI
+// 監聽驗證狀態的變化
 onAuthenticationChanged(user => {
+  // 更新 UI
   updateUserUI(user);
+
+  // 處理跳轉邏輯
+  if (user) {
+    // 如果用戶已登入，且當前頁面不是 index.html，則跳轉
+    if (window.location.pathname.indexOf('index.html') === -1 && window.location.pathname.indexOf('main.html') > -1) {
+      window.location.href = 'index.html';
+    }
+  }
 });

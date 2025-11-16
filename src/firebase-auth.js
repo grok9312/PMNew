@@ -9,12 +9,13 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
 // Your web app's Firebase configuration
 // ❗❗❗ 請將此處替換為您自己的 Firebase 專案設定 ❗❗❗
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBcS0q4NRu-LJllT3peYI78MFRyLAjnw98",
+    authDomain: "pmnew-386ae.firebaseapp.com",
+    projectId: "pmnew-386ae",
+    storageBucket: "pmnew-386ae.firebasestorage.app",
+    messagingSenderId: "667290651824",
+    appId: "1:667290651824:web:597a4d1303c6b9f6373f75",
+    measurementId: "G-W385FJ34JH"
 };
 
 // Initialize Firebase

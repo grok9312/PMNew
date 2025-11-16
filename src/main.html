@@ -3,263 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選擇關卡 - 演算法生存挑戰</title>
+    <title>演算法生存挑戰 - 選擇關卡</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
         :root {
             --squid-pink: #ff1493;
             --squid-cyan: #00d9ff;
             --squid-dark: #0a0a0a;
             --squid-green: #00ff41;
         }
-
-        .navbar {
-            background: linear-gradient(135deg, var(--squid-dark) 0%, #1a0a1a 100%);
-            border-bottom: 3px solid var(--squid-pink);
-            padding: 1rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.3);
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--squid-pink);
-            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
-            letter-spacing: 2px;
-        }
-
-        .player-auth-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .auth-button {
-            background: var(--squid-pink);
-            color: #000;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .auth-button:hover {
-            background: var(--squid-cyan);
-            box-shadow: 0 0 15px var(--squid-cyan);
-        }
-        .player-profile {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--squid-cyan);
-        }
-        .player-name {
-            font-weight: 600;
-        }
-
-        .games-section {
-            padding: 4rem 3rem;
-            background: var(--squid-dark);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 3rem;
-            color: var(--squid-pink);
-            text-shadow: 0 0 20px rgba(255, 20, 147, 0.6);
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .game-card {
-            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%);
-            border: 3px solid var(--squid-pink);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 40px rgba(255, 20, 147, 0.4);
-            border-color: var(--squid-cyan);
-        }
-
-        .game-number {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--squid-pink);
-            color: #000;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        body {
+            margin: 0;
+            background: linear-gradient(to top, #000010, #0a0a2a);
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 900;
-            font-size: 1.5rem;
+            font-family: 'Noto Sans TC', sans-serif;
+            overflow: hidden;
+            transition: opacity 0.5s ease-out;
         }
-
-        .game-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .ocean {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0, 217, 255, 0.3), transparent);
+            z-index: 1;
         }
-
-        .game-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .island {
+            position: relative;
+            width: 500px;
+            height: 250px;
+            background: #2d1a2d;
+            border-radius: 50%;
+            border: 3px solid var(--squid-pink);
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .title {
+            position: absolute;
+            top: -100px;
             color: var(--squid-cyan);
+            font-size: 3rem;
+            text-shadow: 0 0 15px var(--squid-cyan);
+            text-align: center;
         }
-
-        .game-subtitle {
-            font-size: 1.1rem;
-            color: #888;
-            margin-bottom: 1rem;
+        .levels-container {
+            display: flex;
+            gap: 4rem;
+            position: relative;
+            z-index: 3;
         }
-
-        .game-description {
-            color: #aaa;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+        .level {
+            width: 100px;
+            height: 100px;
+            background: rgba(10, 10, 10, 0.5);
+            border: 3px solid var(--squid-cyan);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
         }
-
-        .game-status {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+        .level:hover {
+            background: var(--squid-cyan);
+            border-color: var(--squid-pink);
+            color: #000;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 217, 255, 0.4);
+        }
+        .level .symbol {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        .level .name {
             font-size: 0.9rem;
-            font-weight: 600;
-            background: rgba(0, 255, 65, 0.2);
-            color: var(--squid-green);
-            border: 2px solid var(--squid-green);
+            margin-top: 0.5rem;
+        }
+        .level.locked {
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.5);
+            border-color: #555;
+            color: #777;
+        }
+        .level.locked:hover {
+            transform: none;
+            box-shadow: none;
+            background: rgba(50, 50, 50, 0.5);
+            border-color: #555;
         }
     </style>
 </head>
 <body>
-    <!-- 導航欄 -->
-    <nav class="navbar">
-        <div class="logo">🦑 演算法生存挑戰</div>
-        <div id="player-auth-container" class="player-auth-container">
-            <button id="sign-in-btn" class="auth-button">使用 Google 登入</button>
-        </div>
-    </nav>
-
-    <!-- 遊戲關卡 -->
-    <section class="games-section">
-        <h2 class="section-title">🎮 選擇你的挑戰</h2>
-        
-        <div class="games-grid">
-            <!-- 第一關：佇列 -->
-            <div class="game-card" onclick="location.href='queue-game.html'">
-                <div class="game-number">01</div>
-                <div class="game-icon">🔨</div>
-                <h3 class="game-title">打地鼠挑戰</h3>
-                <p class="game-subtitle">Queue（佇列）</p>
-                <p class="game-description">
-                    學習先進先出（FIFO）的概念。地鼠依序出現排隊，必須按照出現順序打擊。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 第二關：堆疊 -->
-            <div class="game-card" onclick="location.href='stack-game.html'">
-                <div class="game-number">02</div>
-                <div class="game-icon">📚</div>
-                <h3 class="game-title">堆疊消消樂</h3>
-                <p class="game-subtitle">Stack（堆疊）</p>
-                <p class="game-description">
-                    學習後進先出（LIFO）的概念。方塊不斷堆疊，只能從最上面取出。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 第三關：鏈結串列 -->
-            <div class="game-card" onclick="location.href='linked-list-game.html'">
-                <div class="game-number">03</div>
-                <div class="game-icon">🍪</div>
-                <h3 class="game-title">椪糖挑戰</h3>
-                <p class="game-subtitle">Linked List（鏈結串列）</p>
-                <p class="game-description">
-                    學習節點之間的連結關係。每個椪糖圖案都是一個節點，透過指標連接。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 第四關：樹狀結構 -->
-            <div class="game-card" onclick="location.href='tree-game.html'">
-                <div class="game-number">04</div>
-                <div class="game-icon">🌉</div>
-                <h3 class="game-title">玻璃橋挑戰</h3>
-                <p class="game-subtitle">Binary Tree（二元樹）</p>
-                <p class="game-description">
-                    學習樹狀結構的遍歷。每一步選擇左或右，形成二元樹的路徑。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 第五關：圖論 -->
-            <div class="game-card" onclick="location.href='graph-game.html'">
-                <div class="game-number">05</div>
-                <div class="game-icon">🦑</div>
-                <h3 class="game-title">魷魚逃生路線</h3>
-                <p class="game-subtitle">Graph（圖）</p>
-                <p class="game-description">
-                    學習圖的遍歷與最短路徑。跟隨 Dijkstra 演算法找出最短逃生路線。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 第六關：排序演算法 -->
-            <div class="game-card" onclick="location.href='sorting-game.html'">
-                <div class="game-number">06</div>
-                <div class="game-icon">🎯</div>
-                <h3 class="game-title">彈珠遊戲</h3>
-                <p class="game-subtitle">Sorting（排序）</p>
-                <p class="game-description">
-                    學習各種排序演算法。將彈珠按照大小排序，比較不同演算法的效率。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
+    <h1 class="title">選擇你的挑戰</h1>
+    <div class="ocean"></div>
+    <div class="island">
+        <div class="levels-container">
+            <a href="graph-game.html" class="level" data-level="1">
+                <div class="symbol">△</div>
+                <div class="name">最短路徑</div>
+            </a>
+            <a href="sorting-game.html" class="level" data-level="2">
+                <div class="symbol">□</div>
+                <div class="name">排序挑戰</div>
+            </a>
+            <div class="level locked">
+                <div class="symbol">○</div>
+                <div class="name">尚未開放</div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <script type="module" src="main-auth.js"></script>
+    <script>
+        document.querySelectorAll('.level').forEach(level => {
+            if (!level.classList.contains('locked')) {
+                level.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const destination = this.href;
+                    document.body.style.opacity = '0';
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500); // 等待淡出動畫完成
+                });
+            }
+        });
+    </script>
 </body>
 </html>

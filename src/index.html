@@ -3,28 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選擇關卡 - 演算法生存挑戰</title>
+    <title>挑戰大廳 - 演算法生存挑戰</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         :root {
             --squid-pink: #ff1493;
             --squid-cyan: #00d9ff;
             --squid-dark: #0a0a0a;
             --squid-green: #00ff41;
+            --island-sand: #4a3f35;
+            --island-sand-dark: #3a312a;
         }
-
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            overflow-x: hidden;
+        }
         .navbar {
             background: linear-gradient(135deg, var(--squid-dark) 0%, #1a0a1a 100%);
             border-bottom: 3px solid var(--squid-pink);
@@ -37,273 +32,290 @@
             z-index: 100;
             box-shadow: 0 4px 20px rgba(255, 20, 147, 0.3);
         }
+        .logo { font-size: 2rem; font-weight: 900; color: var(--squid-pink); text-shadow: 0 0 20px rgba(255, 20, 147, 0.8); letter-spacing: 2px; }
+        .player-auth-container { display: flex; align-items: center; gap: 1rem; }
+        .auth-button { background: var(--squid-pink); color: #000; border: none; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .auth-button:hover { background: var(--squid-cyan); box-shadow: 0 0 15px var(--squid-cyan); }
+        .player-profile { display: flex; align-items: center; gap: 1rem; }
+        .player-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--squid-cyan); }
+        .player-name { font-weight: 600; }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--squid-pink);
-            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
-            letter-spacing: 2px;
-        }
+        .games-section, .articles-section { padding: 4rem 3rem; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 3rem; color: var(--squid-pink); text-shadow: 0 0 20px rgba(255, 20, 147, 0.6); }
 
-        .player-auth-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .auth-button {
-            background: var(--squid-pink);
-            color: #000;
-            border: none;
-            padding: 0.6rem 1.2rem;
+        /* --- FINAL OCEAN & ISLANDS STYLE --- */
+        .ocean-frame {
+            background: linear-gradient(to top, #0a0a2a, #000010);
+            border: 3px solid var(--squid-cyan);
             border-radius: 20px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .auth-button:hover {
-            background: var(--squid-cyan);
-            box-shadow: 0 0 15px var(--squid-cyan);
-        }
-        .player-profile {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--squid-cyan);
-        }
-        .player-name {
-            font-weight: 600;
-        }
-
-        .games-section, .articles-section {
-            padding: 4rem 3rem;
-            background: var(--squid-dark);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 3rem;
-            color: var(--squid-pink);
-            text-shadow: 0 0 20px rgba(255, 20, 147, 0.6);
-        }
-
-        .games-grid, .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .game-card, .article-card {
-            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%);
-            border: 3px solid var(--squid-pink);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s;
-            cursor: pointer;
+            padding: 3rem 2rem;
             position: relative;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
+            min-height: 500px;
+        }
+        .waves-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            border-radius: 17px;
+            z-index: 1;
         }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background-size: 1000px 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M 0 50 C 250 100 750 0 1000 50 Z" stroke="none" fill="rgba(0, 217, 255, 0.1)"></path></svg>');
+            animation: wave-move 15s linear infinite;
+        }
+        .wave.wave2 { bottom: 10px; opacity: 0.5; animation-duration: 12s; animation-direction: reverse; }
+        .wave.wave3 { bottom: 20px; opacity: 0.3; animation-duration: 9s; }
+        @keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-1000px); } }
 
-        .game-card:hover, .article-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 40px rgba(255, 20, 147, 0.4);
+        .islands-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            z-index: 2;
+        }
+        .island {
+            width: 130px;
+            height: 120px;
+            background: linear-gradient(145deg, var(--island-sand), var(--island-sand-dark));
+            border: 3px solid #312821;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            position: absolute;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        .island:nth-child(1) { top: 20px; left: 10%; border-radius: 45% 55% 60% 40% / 70% 80% 20% 30%; }
+        .island:nth-child(2) { top: 180px; left: 25%; border-radius: 60% 40% 45% 55% / 70% 30% 70% 30%; }
+        .island:nth-child(3) { top: 40px; left: 45%; border-radius: 50% 50% 35% 65% / 50% 40% 60% 50%; }
+        .island:nth-child(4) { top: 220px; left: 60%; border-radius: 30% 70% 50% 50% / 60% 60% 40% 40%; }
+        .island:nth-child(5) { top: 60px; left: 75%; border-radius: 65% 35% 33% 67% / 57% 70% 30% 43%; }
+        .island:nth-child(6) { top: 250px; left: 85%; border-radius: 38% 62% 70% 30% / 50% 61% 39% 50%; }
+
+        .island:hover {
+            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             border-color: var(--squid-cyan);
+            z-index: 11;
         }
-
-        .game-icon, .article-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .game-title, .article-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--squid-cyan);
-        }
-
-        .game-subtitle, .article-subtitle {
-            font-size: 1.1rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-
-        .game-description, .article-description {
-            color: #aaa;
+        .island-icon { font-size: 3rem; line-height: 1; text-shadow: 0 0 10px #000; }
+        .island-name { font-size: 1rem; font-weight: bold; margin-top: 0.5rem; color: var(--squid-cyan); }
+        .island-description {
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background: var(--squid-dark);
+            border: 2px solid var(--squid-cyan);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 1.5rem;
+            text-align: left;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
         }
+        .island-description::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -8px; border-width: 8px; border-style: solid; border-color: var(--squid-cyan) transparent transparent transparent; }
+        .island:hover .island-description { opacity: 1; visibility: visible; }
+        .island.disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(80%); }
+        .island.disabled:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.4); border-color: #312821; z-index: auto; }
+        .island.disabled .island-description { content: '請先登入以挑戰'; display: block; }
+        /* --- END NEW STYLE --- */
 
-        .game-status {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            background: rgba(0, 255, 65, 0.2);
-            color: var(--squid-green);
-            border: 2px solid var(--squid-green);
+        .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
+        .article-card { background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%); border: 3px solid var(--squid-pink); border-radius: 20px; padding: 2rem; transition: all 0.3s; cursor: pointer; }
+        .article-card:hover { transform: translateY(-10px); box-shadow: 0 10px 40px rgba(255, 20, 147, 0.4); border-color: var(--squid-cyan); }
+        .article-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .article-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--squid-cyan); }
+        .article-subtitle { font-size: 1.1rem; color: #888; margin-bottom: 1rem; }
+        .article-description { color: #aaa; line-height: 1.6; }
+
+        /* Animation Modal Styles (Updated for Story) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 200; }
+        #animation-container { width: 90vw; height: 90vh; max-width: 1000px; max-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        #animation-svg { width: 100%; height: 100%; overflow: visible; font-family: 'VT323', monospace; }
+        .typing-text { fill: var(--squid-green); font-size: 24px; }
+        .cursor { fill: var(--squid-green); animation: blink 1s step-end infinite; }
+        .challenger { opacity: 0; animation: slide-in 1s 4s forwards; }
+        .challenger-body { fill: var(--squid-green); }
+        .challenger-head { fill: #ffdbac; }
+        .challenger-arm { fill: none; stroke: #ffdbac; stroke-width: 10; stroke-linecap: round; transform-origin: 160px 250px; }
+        .card-group { opacity: 0; animation: card-fall-in 1s 5.5s forwards; transform-origin: center; cursor: pointer; }
+        .card-rect { fill: #d2b48c; stroke: #a07c54; stroke-width: 2; }
+        .card-symbol { stroke: #a07c54; stroke-width: 8; fill: none; }
+        .card-challenge-text {
+            font-size: 18px;
+            fill: var(--squid-pink);
+            font-weight: bold;
+            text-anchor: middle;
+            opacity: 0;
+            animation: fade-in 1s 7s forwards;
         }
+        .close-btn { cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+        .close-btn:hover { opacity: 1; }
+        .close-btn-line { stroke: #888; stroke-width: 4; }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes fade-in { to { opacity: 1; } }
+        @keyframes slide-in { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes card-fall-in { from { transform: translateY(-300px) rotate(-15deg); opacity: 0; } to { transform: translateY(0) rotate(0); opacity: 1; } }
+        @keyframes arm-slap { 0% { transform: rotate(0deg); } 50% { transform: rotate(20deg); } 100% { transform: rotate(-10deg); } }
+        @keyframes card-flip-out { from { transform: rotateY(0) scale(1); opacity: 1; } to { transform: rotateY(360deg) scale(0); opacity: 0; } }
     </style>
 </head>
 <body>
-    <!-- 導航欄 -->
-    <nav class="navbar">
-        <div class="logo">🦑 演算法生存挑戰</div>
-        <div id="player-auth-container" class="player-auth-container">
-            <button id="sign-in-btn" class="auth-button">使用 Google 登入</button>
+    <!-- Animation Modal -->
+    <div id="animation-modal" class="modal-overlay">
+        <div id="animation-container">
+            <svg id="animation-svg" viewBox="0 0 800 400">
+                <g id="text-scene"><text id="line1" class="typing-text" x="50" y="180"></text><text id="line2" class="typing-text" x="50" y="230"></text><rect id="cursor" class="cursor" x="50" y="160" width="12" height="24" style="display: none;"></rect></g>
+                <g id="character-scene" style="opacity: 0;"><g class="challenger"><rect class="challenger-body" x="120" y="230" width="60" height="100" rx="10" /><circle class="challenger-head" cx="150" cy="200" r="30" /><path id="challenger-arm" class="challenger-arm" d="M 160 250 C 200 230, 250 250, 280 280" /></g><g id="card-group" class="card-group"><rect class="card-rect" x="350" y="150" width="220" height="120" rx="5"></rect><circle class="card-symbol" cx="385" cy="180" r="10"></circle><polygon class="card-symbol" points="425,170 440,190 410,190"></polygon><rect class="card-symbol" x="455" y="170" width="20" height="20"></rect><text id="card-text" class="card-challenge-text" x="460" y="240">你，敢接受挑戰嗎？</text></g></g>
+                <g id="close-btn" class="close-btn"><line class="close-btn-line" x1="760" y1="20" x2="780" y2="40" /><line class="close-btn-line" x1="780" y1="20" x2="760" y2="40" /></g>
+            </svg>
         </div>
-    </nav>
+    </div>
 
-    <!-- 遊戲關卡 -->
+    <!-- Main Content -->
+    <nav class="navbar"><div class="logo">🦑 演算法生存挑戰</div><div id="player-auth-container" class="player-auth-container"></div></nav>
+
     <section class="games-section">
-        <h2 class="section-title">🎮 選擇你的挑戰</h2>
-        
-        <div class="games-grid">
-            <!-- 佇列 -->
-            <div class="game-card" onclick="location.href='queue-game.html'">
-                <div class="game-icon">🔨</div>
-                <h3 class="game-title">打地鼠挑戰</h3>
-                <p class="game-subtitle">Queue（佇列）</p>
-                <p class="game-description">
-                    學習先進先出（FIFO）的概念。地鼠依序出現排隊，必須按照出現順序打擊。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 堆疊 -->
-            <div class="game-card" onclick="location.href='stack-game.html'">
-                <div class="game-icon">📚</div>
-                <h3 class="game-title">堆疊消消樂</h3>
-                <p class="game-subtitle">Stack（堆疊）</p>
-                <p class="game-description">
-                    學習後進先出（LIFO）的概念。方塊不斷堆疊，只能從最上面取出。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 鏈結串列 -->
-            <div class="game-card" onclick="location.href='linked-list-game.html'">
-                <div class="game-icon">🍪</div>
-                <h3 class="game-title">椪糖挑戰</h3>
-                <p class="game-subtitle">Linked List（鏈結串列）</p>
-                <p class="game-description">
-                    學習節點之間的連結關係。每個椪糖圖案都是一個節點，透過指標連接。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 樹狀結構 -->
-            <div class="game-card" onclick="location.href='tree-game.html'">
-                <div class="game-icon">🌉</div>
-                <h3 class="game-title">玻璃橋挑戰</h3>
-                <p class="game-subtitle">Binary Tree（二元樹）</p>
-                <p class="game-description">
-                    學習樹狀結構的遍歷。每一步選擇左或右，形成二元樹的路徑。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 圖論 -->
-            <div class="game-card" onclick="location.href='graph-game.html'">
-                <div class="game-icon">🗺️</div>
-                <h3 class="game-title">最短路徑挑戰</h3>
-                <p class="game-subtitle">Graph（圖）</p>
-                <p class="game-description">
-                    學習圖的遍歷與最短路徑。在複雜的圖案中找到最佳路線。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
-            </div>
-
-            <!-- 排序演算法 -->
-            <div class="game-card" onclick="location.href='sorting-game.html'">
-                <div class="game-icon">🎯</div>
-                <h3 class="game-title">彈珠排序挑戰</h3>
-                <p class="game-subtitle">Sorting（排序）</p>
-                <p class="game-description">
-                    親手操作氣泡排序，理解演算法的奧秘。
-                </p>
-                <span class="game-status">✓ 可遊玩</span>
+        <h2 class="section-title">挑戰大廳</h2>
+        <div class="ocean-frame">
+            <div class="waves-wrapper"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
+            <div class="islands-container">
+                <a class="island" data-game="queue-game.html"><div class="island-icon">🔨</div><div class="island-name">打地鼠挑戰</div><div class="island-description"><strong>Queue (佇列):</strong> 學習先進先出 (FIFO) 的概念。地鼠依序排隊出現，你必須按照牠們出現的順序進行打擊。</div></a>
+                <a class="island" data-game="stack-game.html"><div class="island-icon">📚</div><div class="island-name">堆疊消消樂</div><div class="island-description"><strong>Stack (堆疊):</strong> 學習後進先出 (LIFO) 的概念。方塊會不斷堆疊起來，但你永遠只能從最頂端的那一個開始消除。</div></a>
+                <a class="island" data-game="linked-list-game.html"><div class="island-icon">🍪</div><div class="island-name">椪糖挑戰</div><div class="island-description"><strong>Linked List (鏈結串列):</strong> 學習節點之間如何透過指標連結。每個椪糖圖案都是一個節點，你需要依循指標小心翼翼地將它完整取出。</div></a>
+                <a class="island" data-game="tree-game.html"><div class="island-icon">🌉</div><div class="island-name">玻璃橋挑戰</div><div class="island-description"><strong>Binary Tree (二元樹):</strong> 學習樹狀結構的遍歷。每一步都面臨向左或向右的選擇，錯誤的決定將導致墜落，正確的路徑則構成一棵二元樹。</div></a>
+                <a class="island" data-game="graph-game.html"><div class="island-icon">🗺️</div><div class="island-name">最短路徑挑戰</div><div class="island-description"><strong>Graph (圖):</strong> 學習圖的遍歷與最短路徑演算法。在看似複雜的地圖中，運用演算法思維找出從起點到終點的最佳路線。</div></a>
+                <a class="island" data-game="sorting-game.html"><div class="island-icon">🎯</div><div class="island-name">彈珠排序挑戰</div><div class="island-description"><strong>Sorting (排序):</strong> 親手操作經典的「氣泡排序法」，將混亂的彈珠按照大小順序排列整齊，直觀地理解排序演算法的運作過程。</div></a>
             </div>
         </div>
     </section>
 
-    <!-- 教學文章區塊 -->
     <section class="articles-section">
         <h2 class="section-title">📚 學習資源</h2>
         <div class="articles-grid">
-            <!-- 演算法概論 -->
-            <div class="article-card" onclick="location.href='article-algorithm-intro.html';">
-                <div class="article-icon">💡</div>
-                <h3 class="article-title">演算法概論：程式設計的靈魂</h3>
-                <p class="article-subtitle">從概念到應用</p>
-                <p class="article-description">
-                    深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。
-                </p>
-            </div>
-
-            <!-- 資料結構總覽 -->
-            <div class="article-card" onclick="location.href='article-data-structure-overview.html';">
-                <div class="article-icon">🧱</div>
-                <h3 class="article-title">資料結構總覽：高效組織數據的藝術</h3>
-                <p class="article-subtitle">陣列、鏈結串列、樹與圖</p>
-                <p class="article-description">
-                    探索各種資料結構的特性與應用場景，了解如何選擇最適合的工具。
-                </p>
-            </div>
-
-            <!-- 佇列與堆疊 -->
-            <div class="article-card" onclick="location.href='article-queue-stack.html';">
-                <div class="article-icon">🔄</div>
-                <h3 class="article-title">佇列與堆疊：先進先出與後進先出</h3>
-                <p class="article-subtitle">兩種基本數據結構的應用</p>
-                <p class="article-description">
-                    透過生活實例，理解佇列 (Queue) 和堆疊 (Stack) 的運作原理及其在程式中的應用。
-                </p>
-            </div>
-
-            <!-- 鏈結串列深入解析 -->
-            <div class="article-card" onclick="location.href='article-linked-list.html';">
-                <div class="article-icon">🔗</div>
-                <h3 class="article-title">鏈結串列：彈性數據組織的基石</h3>
-                <p class="article-subtitle">動態記憶體管理的秘密</p>
-                <p class="article-description">
-                    學習鏈結串列的節點連結方式，以及它在動態數據處理上的優勢。
-                </p>
-            </div>
-
-            <!-- 樹狀結構與二元樹 -->
-            <div class="article-card" onclick="location.href='article-tree-binary-tree.html';">
-                <div class="article-icon">🌳</div>
-                <h3 class="article-title">樹狀結構與二元樹：階層數據的完美呈現</h3>
-                <p class="article-subtitle">從家譜到搜尋引擎</p>
-                <p class="article-description">
-                    探索樹的各種形態，特別是二元樹的搜尋、插入與刪除操作。
-                </p>
-            </div>
-
-            <!-- 圖論與最短路徑 -->
-            <div class="article-card" onclick="location.href='article-graph-dijkstra.html';">
-                <div class="article-icon">🌐</div>
-                <h3 class="article-title">圖論與最短路徑：複雜網絡的導航者</h3>
-                <p class="article-subtitle">Dijkstra 演算法的應用</p>
-                <p class="article-description">
-                    理解圖的構成，以及 Dijkstra 演算法如何在高鐵路線、網路路由中找到最佳路徑。
-                </p>
-            </div>
+            <div class="article-card" onclick="location.href='article-algorithm-intro.html';"><div class="article-icon">💡</div><h3 class="article-title">演算法概論：程式設計的靈魂</h3><p class="article-subtitle">從概念到應用</p><p class="article-description">深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。</p></div>
+            <div class="article-card" onclick="location.href='article-data-structure-overview.html';"><div class="article-icon">🧱</div><h3 class="article-title">資料結構總覽：高效組織數據的藝術</h3><p class="article-subtitle">陣列、鏈結串列、樹與圖</p><p class="article-description">探索各種資料結構的特性與應用場景，了解如何選擇最適合的工具。</p></div>
+            <div class="article-card" onclick="location.href='article-queue-stack.html';"><div class="article-icon">🔄</div><h3 class="article-title">佇列與堆疊：先進先出與後進先出</h3><p class="article-subtitle">兩種基本數據結構的應用</p><p class="article-description">透過生活實例，理解佇列 (Queue) 和堆疊 (Stack) 的運作原理及其在程式中的應用。</p></div>
+            <div class="article-card" onclick="location.href='article-linked-list.html';"><div class="article-icon">🔗</div><h3 class="article-title">鏈結串列：彈性數據組織的基石</h3><p class="article-subtitle">動態記憶體管理的秘密</p><p class="article-description">學習鏈結串列的節點連結方式，以及它在動態數據處理上的優勢。</p></div>
+            <div class="article-card" onclick="location.href='article-tree-binary-tree.html';"><div class="article-icon">🌳</div><h3 class="article-title">樹狀結構與二元樹：階層數據的完美呈現</h3><p class="article-subtitle">從家譜到搜尋引擎</p><p class="article-description">探索樹的各種形態，特別是二元樹的搜尋、插入與刪除操作。</p></div>
+            <div class="article-card" onclick="location.href='article-graph-dijkstra.html';"><div class="article-icon">🌐</div><h3 class="article-title">圖論與最短路徑：複雜網絡的導航者</h3><p class="article-subtitle">Dijkstra 演算法的應用</p><p class="article-description">理解圖的構成，以及 Dijkstra 演算法如何在高鐵路線、網路路由中找到最佳路徑。</p></div>
         </div>
     </section>
 
+    <script type="module">
+        import { onAuthenticationChanged } from './firebase-auth.js';
+
+        const animationModal = document.getElementById('animation-modal');
+        const cardGroup = document.getElementById('card-group');
+        const challengerArm = document.getElementById('challenger-arm');
+        const closeBtn = document.getElementById('close-btn');
+
+        // --- Story-driven Animation Logic ---
+        const typingSpeed = 80;
+        const line1 = document.getElementById('line1');
+        const line2 = document.getElementById('line2');
+        const cursor = document.getElementById('cursor');
+        const textScene = document.getElementById('text-scene');
+        const characterScene = document.getElementById('character-scene');
+
+        function type(element, text, callback) {
+            let i = 0;
+            cursor.style.display = 'block';
+            const cursorY = element.getAttribute('y') - 20;
+            cursor.setAttribute('y', cursorY);
+
+            function typing() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    cursor.setAttribute('x', 50 + (element.textContent.length * 14.5));
+                    i++;
+                    setTimeout(typing, typingSpeed);
+                } else if (callback) {
+                    cursor.style.display = 'none';
+                    callback();
+                }
+            }
+            typing();
+        }
+
+        function playAnimation() {
+            animationModal.style.display = 'flex';
+            setTimeout(() => {
+                type(line1, '你厭倦了無止盡的 Bug 與複雜的邏輯嗎？', () => {
+                    setTimeout(() => {
+                        type(line2, '一個能將抽象概念化為生存挑戰的遊戲。', () => {
+                            setTimeout(() => {
+                                textScene.style.display = 'none';
+                                characterScene.style.opacity = 1;
+                            }, 1000);
+                        });
+                    }, 500);
+                });
+            }, 1000);
+        }
+
+        function closeAnimation() { animationModal.style.display = 'none'; }
+        cardGroup.addEventListener('click', () => {
+            challengerArm.style.animation = 'arm-slap 0.2s ease-in forwards';
+            cardGroup.style.animation = 'card-flip-out 0.5s 0.1s ease-in-out forwards';
+            setTimeout(closeAnimation, 800);
+        });
+        closeBtn.addEventListener('click', closeAnimation);
+        
+        if (!sessionStorage.getItem('hasVisited')) {
+            window.addEventListener('load', playAnimation);
+            sessionStorage.setItem('hasVisited', 'true');
+        }
+
+        // --- Page transition animation ---
+        document.querySelectorAll('.island').forEach(island => {
+            island.addEventListener('click', function(e) {
+                if (this.classList.contains('disabled')) { e.preventDefault(); return; }
+                e.preventDefault();
+                const destination = this.dataset.game;
+                document.body.style.transition = 'opacity 0.5s ease-out';
+                document.body.style.opacity = '0';
+                setTimeout(() => { window.location.href = destination; }, 500);
+            });
+        });
+
+        // --- Auth Logic ---
+        onAuthenticationChanged(user => {
+            const islands = document.querySelectorAll('.island');
+            if (user) {
+                islands.forEach(island => island.classList.remove('disabled'));
+            } else {
+                islands.forEach(island => {
+                    if (island.dataset.game === 'queue-game.html') {
+                        island.classList.remove('disabled');
+                        return;
+                    }
+                    island.classList.add('disabled');
+                });
+            }
+        });
+    </script>
     <script type="module" src="main-auth.js"></script>
 </body>
 </html>
