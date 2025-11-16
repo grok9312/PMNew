@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>椪糖挑戰 - Linked List</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+            --dalgona-color: #f0e68c; /* 椪糖顏色 */
+            --dalgona-border: #d2b48c;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .playground-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            height: 100vh;
+        }
+
+        /* 共用樣式 */
+        .sidebar, .tasks-panel {
+            background: linear-gradient(135deg, #2d1a2d 0%, #1a0a1a 100%);
+            border-right: 3px solid var(--squid-pink);
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        .tasks-panel {
+            border-right: none;
+            border-left: 3px solid var(--squid-pink);
+        }
+        .tutorial-box, .status-box, .history-box {
+            background: rgba(255, 20, 147, 0.1);
+            border: 2px solid var(--squid-pink);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tasks-panel h3, .tutorial-box h3 {
+            color: var(--squid-pink);
+            margin-bottom: 1rem;
+        }
+        .tutorial-box p {
+            line-height: 1.8;
+            color: #ddd;
+        }
+        .tutorial-box strong {
+            color: var(--squid-cyan);
+        }
+        .back-button {
+            position: absolute; top: 1rem; left: 1rem; background: rgba(255, 20, 147, 0.3);
+            border: 2px solid var(--squid-pink); color: var(--squid-pink); width: 45px; height: 45px;
+            border-radius: 50%; cursor: pointer; font-size: 1.3rem; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.3s;
+        }
+        .back-button:hover { background: var(--squid-pink); color: #000; }
+
+        /* 中間遊戲區 */
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 1.5rem;
+        }
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--squid-pink) 0%, #c71585 100%);
+            color: #000;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+        }
+        .game-header h1 { color: #000; text-shadow: none; }
+        .game-info { display: flex; gap: 2rem; font-size: 1.5rem; }
+        .game-info span { font-weight: bold; }
+
+        /* 椪糖挑戰遊戲區 */
+        .dalgona-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        .dalgona-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .dalgona-cookie {
+            fill: var(--dalgona-color);
+            stroke: var(--dalgona-border);
+            stroke-width: 5;
+        }
+        .node {
+            fill: #fff;
+            stroke: var(--squid-pink);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: r 0.2s, fill 0.2s;
+        }
+        .node.head {
+            fill: var(--squid-green);
+        }
+        .node.active {
+            fill: var(--squid-cyan);
+            r: 12;
+            animation: pulse 1s infinite;
+        }
+        .pointer {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 2;
+            stroke-dasharray: 5 5;
+        }
+        .trace-line {
+            stroke: var(--squid-green);
+            stroke-width: 4;
+            transition: all 0.3s;
+        }
+        .crack-line {
+            stroke: red;
+            stroke-width: 3;
+            animation: crack 0.5s forwards;
+        }
+        @keyframes pulse { 50% { r: 15; } }
+        @keyframes crack { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 1000; } }
+
+        #start-btn {
+            background: var(--squid-pink); color: #000; border: none; padding: 1rem 2rem;
+            font-size: 1.2rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: all 0.2s;
+        }
+        #start-btn:hover { background: var(--squid-cyan); box-shadow: 0 0 20px var(--squid-cyan); }
+        #start-btn:disabled { background: #555; cursor: not-allowed; }
+
+        /* 右側狀態 */
+        .history-item {
+            background: rgba(255, 20, 147, 0.1); padding: 0.75rem; border-radius: 8px;
+            margin-bottom: 0.5rem; font-size: 0.9rem; border-left: 3px solid var(--squid-cyan);
+        }
+        .history-item.success { border-left-color: var(--squid-green); }
+        .history-item.fail { border-left-color: #ff0000; }
+
+        /* 過關頁面 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
+            display: flex; align-items: center; justify-content: center; z-index: 100; display: none;
+        }
+        .modal-content {
+            background: var(--squid-dark); padding: 3rem; border-radius: 20px;
+            border: 3px solid var(--squid-pink); text-align: center; box-shadow: 0 0 40px var(--squid-pink);
+        }
+        .modal-content h2 { font-size: 2.5rem; color: var(--squid-pink); margin-bottom: 1rem; }
+        .modal-content p { font-size: 1.5rem; margin-bottom: 2rem; }
+        .modal-content .final-score { color: var(--squid-cyan); font-weight: bold; font-size: 2rem; }
+        .modal-buttons { display: flex; gap: 1rem; }
+        .modal-buttons .btn {
+            flex: 1; padding: 0.8rem 1.5rem; font-size: 1rem; text-decoration: none;
+            display: inline-block; line-height: 1.5; border-radius: 12px; border: none; cursor: pointer;
+        }
+        .btn-replay { background: var(--squid-green); color: #000; }
+        .btn-next { background: var(--squid-cyan); color: #000; }
+    </style>
+</head>
+<body>
+    <div class="playground-container">
+        <!-- 左側：教學 -->
+        <div class="sidebar">
+            <a href="index.html" class="back-button" title="返回主選單">🏠</a>
+            <div class="tutorial-box" style="margin-top: 4rem;">
+                <h3>📖 遊戲規則</h3>
+                <p><strong>1. 找到起點 (Head)</strong><br>綠色的節點是鏈結串列的起點。</p>
+                <p><strong>2. 依序點擊節點</strong><br>成功點擊後，下一個節點會亮起，請跟隨指引完成圖案。</p>
+                <p><strong>3. 點錯就失敗！</strong><br>如果點到錯誤的節點，椪糖就會碎裂，遊戲直接失敗！</p>
+            </div>
+            <div class="tutorial-box">
+                <h3>💡 學習重點: Linked List</h3>
+                <p><strong>• 節點 (Node)</strong><br>每個點都是一個節點，它儲存了自己的位置。</p>
+                <p><strong>• 指標 (Pointer)</strong><br>每個節點內部都有一個「指標」，指向下一個節點的位置。遊戲中的虛線就是指標的視覺化。</p>
+                <p><strong>• 遍歷 (Traversal)</strong><br>跟隨指標從一個節點移動到下一個節點的過程，就稱為遍歷。你的任務就是完成整個鏈結串列的遍歷！</p>
+            </div>
+        </div>
+
+        <!-- 中間：遊戲區 -->
+        <div class="game-area">
+            <div class="game-header">
+                <h1>🍪 椪糖挑戰</h1>
+                <div class="game-info">
+                    <div>分數: <span id="score">0</span></div>
+                    <div>時間: <span id="timer">45</span>s</div>
+                </div>
+            </div>
+            <div class="dalgona-container">
+                <svg id="dalgona-svg" class="dalgona-svg"></svg>
+            </div>
+            <button id="start-btn" class="btn">開始挑戰</button>
+        </div>
+
+        <!-- 右側：狀態 -->
+        <div class="tasks-panel">
+            <div class="status-box">
+                <h3>📊 遊戲狀態</h3>
+                <div id="game-status"><p>遊戲尚未開始</p></div>
+            </div>
+            <div class="history-box">
+                <h3>📋 操作記錄</h3>
+                <div id="history"><p style="color: #666; text-align: center;">還沒有記錄</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 過關頁面 -->
+    <div class="modal-overlay" id="end-game-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">挑戰失敗</h2>
+            <p>你的最終分數是: <span class="final-score" id="final-score">0</span></p>
+            <div class="modal-buttons">
+                <button class="btn btn-replay" id="replay-btn">重新挑戰</button>
+                <a href="stack-game.html" class="btn btn-next" id="next-level-btn">前往下一關</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const svg = document.getElementById('dalgona-svg');
+        const startBtn = document.getElementById('start-btn');
+        const scoreBoard = document.getElementById('score');
+        const timerBoard = document.getElementById('timer');
+        const gameStatus = document.getElementById('game-status');
+        const historyLog = document.getElementById('history');
+        const endGameModal = document.getElementById('end-game-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const replayBtn = document.getElementById('replay-btn');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+
+        let gameTime = 45; // 預設時間
+        let score = 0, timerInterval = null, isPlaying = false, currentNodeIndex = 0;
+        const nodes = [ // T 字形
+            { x: 120, y: 100 }, { x: 200, y: 100 }, { x: 280, y: 100 }, { x: 200, y: 180 }, { x: 200, y: 260 }
+        ];
+
+        function addHistory(message, type) {
+            if (historyLog.querySelector('p')) historyLog.innerHTML = '';
+            const item = document.createElement('div');
+            item.className = `history-item ${type}`;
+            item.textContent = message;
+            historyLog.insertBefore(item, historyLog.firstChild);
+            if (historyLog.children.length > 10) historyLog.removeChild(historyLog.lastChild);
+        }
+
+        function renderGame() {
+            svg.innerHTML = ''; // 清空畫布
+            // 畫椪糖背景
+            const cookie = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            cookie.setAttribute('cx', '200'); cookie.setAttribute('cy', '200');
+            cookie.setAttribute('r', '150'); cookie.setAttribute('class', 'dalgona-cookie');
+            svg.appendChild(cookie);
+
+            // 畫指標 (虛線)
+            for (let i = 0; i < nodes.length; i++) {
+                const nextNode = nodes[(i + 1) % nodes.length];
+                const pointer = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                pointer.setAttribute('x1', String(nodes[i].x)); pointer.setAttribute('y1', String(nodes[i].y));
+                pointer.setAttribute('x2', String(nextNode.x)); pointer.setAttribute('y2', String(nextNode.y));
+                pointer.setAttribute('class', 'pointer');
+                svg.appendChild(pointer);
+            }
+
+            // 畫節點
+            nodes.forEach((node, index) => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', String(node.x)); circle.setAttribute('cy', String(node.y));
+                circle.setAttribute('r', '10');
+                circle.setAttribute('class', 'node');
+                circle.dataset.index = String(index);
+                if (index === 0) circle.classList.add('head');
+                circle.addEventListener('click', handleNodeClick);
+                svg.appendChild(circle);
+            });
+        }
+
+        function handleNodeClick(e) {
+            if (!isPlaying) return;
+            const clickedIndex = parseInt(e.target.dataset.index);
+
+            if (clickedIndex === currentNodeIndex) {
+                // 點擊正確
+                score += 100;
+                addHistory(`點擊節點 #${clickedIndex} 正確！`, 'success');
+
+                // 畫出軌跡
+                if (currentNodeIndex > 0) {
+                    const prevNode = nodes[currentNodeIndex - 1];
+                    const trace = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    trace.setAttribute('x1', String(prevNode.x)); trace.setAttribute('y1', String(prevNode.y));
+                    trace.setAttribute('x2', String(nodes[clickedIndex].x)); trace.setAttribute('y2', String(nodes[clickedIndex].y));
+                    trace.setAttribute('class', 'trace-line');
+                    svg.insertBefore(trace, svg.querySelector('.node'));
+                }
+                
+                currentNodeIndex++;
+                updateActiveNode(); // 更新下一個活動節點
+
+                if (currentNodeIndex === nodes.length) {
+                    // 完成最後一個節點，補上最後一條線
+                    const lastTrace = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    lastTrace.setAttribute('x1', String(nodes[nodes.length - 1].x)); lastTrace.setAttribute('y1', String(nodes[nodes.length - 1].y));
+                    lastTrace.setAttribute('x2', String(nodes[0].x)); lastTrace.setAttribute('y2', String(nodes[0].y));
+                    lastTrace.setAttribute('class', 'trace-line');
+                    svg.insertBefore(lastTrace, svg.querySelector('.node'));
+                    endGame(true); // 獲勝
+                }
+            } else {
+                // 點擊錯誤
+                addHistory(`點擊錯誤！椪糖碎了！`, 'fail');
+                const correctNode = nodes[currentNodeIndex];
+                const crack = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                crack.setAttribute('x1', String(Math.random() * 400)); crack.setAttribute('y1', String(Math.random() * 400));
+                crack.setAttribute('x2', String(correctNode.x)); crack.setAttribute('y2', String(correctNode.y));
+                crack.setAttribute('class', 'crack-line');
+                svg.appendChild(crack);
+                endGame(false); // 失敗
+            }
+            scoreBoard.textContent = String(score);
+        }
+
+        function updateActiveNode() {
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+            const activeNode = document.querySelector(`.node[data-index='${currentNodeIndex}']`);
+            if (activeNode) activeNode.classList.add('active');
+        }
+
+        function startGame() {
+            endGameModal.style.display = 'none';
+            isPlaying = true;
+            score = 0;
+            currentNodeIndex = 0;
+            let timeLeft = gameTime;
+
+            scoreBoard.textContent = String(score);
+            timerBoard.textContent = String(timeLeft);
+            startBtn.style.display = 'none';
+            gameStatus.innerHTML = '<p style="color: var(--squid-green);">遊戲進行中...</p>';
+            historyLog.innerHTML = '';
+            
+            renderGame();
+            // 遊戲開始時，只顯示綠色頭節點，不立即激活
+            const headNode = document.querySelector(`.node[data-index='0']`);
+            if(headNode) headNode.classList.add('head');
+
+            addHistory('挑戰開始！請點擊綠色節點。', 'info');
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerBoard.textContent = String(timeLeft);
+                if (timeLeft <= 0) {
+                    addHistory('時間到！挑戰失敗！', 'fail');
+                    endGame(false);
+                }
+            }, 1000);
+        }
+
+        function endGame(isWin) {
+            isPlaying = false;
+            clearInterval(timerInterval);
+            startBtn.style.display = 'block';
+
+            if (isWin) {
+                modalTitle.textContent = '挑戰成功！';
+                finalScoreDisplay.textContent = String(score + parseInt(timerBoard.textContent) * 50); // 時間獎勵
+                nextLevelBtn.style.display = 'inline-block';
+                gameStatus.innerHTML = `<p style="color: var(--squid-green);">挑戰成功！</p>`;
+            } else {
+                modalTitle.textContent = '挑戰失敗！';
+                finalScoreDisplay.textContent = String(score);
+                nextLevelBtn.style.display = 'none';
+                gameStatus.innerHTML = `<p style="color: #ff0000;">挑戰失敗！</p>`;
+            }
+            endGameModal.style.display = 'flex';
+        }
+
+        startBtn.addEventListener('click', startGame);
+        replayBtn.addEventListener('click', startGame);
+        renderGame(); // 初始顯示圖案
+    </script>
+</body>
+</html>

@@ -3,1060 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資料結構小酒館</title>
+    <title>挑戰大廳 - 演算法生存挑戰</title>
     <style>
-        /* --- 1. 基本與佈局 (Layout) --- */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+            --island-sand: #4a3f35;
+            --island-sand-dark: #3a312a;
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            background-color: #f7f9fc;
-            color: #333;
-            display: grid;
-            grid-template-columns: 260px 1fr; /* 左側導覽列 260px，右側內容填滿 */
-            height: 100vh;
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            overflow-x: hidden;
         }
-
-        /* --- 2. 左側導覽列 (Sidebar) --- */
-        nav.sidebar {
-            background-color: #eef1f6;
-            padding: 2rem 0;
-            border-right: 1px solid #dcdfe6;
-            overflow-y: auto;
-        }
-
-        nav.sidebar h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 0 1.5rem;
-            margin-bottom: 1rem;
-            color: #0052cc; /* 類似 Swift 的藍色 */
-        }
-
-        nav.sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        nav.sidebar li a {
-            display: block;
-            padding: 0.75rem 1.5rem 0.75rem 2.5rem; /* 增加內縮 */
-            text-decoration: none;
-            color: #495057;
-            font-weight: 500;
-            border-left: 4px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        nav.sidebar li a:hover {
-            background-color: #dfe6f0;
-        }
-
-        /* 當前選中的頁面樣式 */
-        nav.sidebar li a.active {
-            color: #007aff;
-            font-weight: 600;
-            background-color: #fff;
-            border-left-color: #007aff;
-        }
-
-        /* --- 3. 右側內容區 (Main Content) --- */
-        main.content {
-            padding: 2.5rem;
-            overflow-y: auto;
-        }
-
-        /* 內容頁面預設隱藏 */
-        .page {
-            display: none;
-        }
-
-        /* 當前顯示的頁面 */
-        .page.active {
-            display: block;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 2rem;
-        }
-
-        p.intro {
-            font-size: 1.1rem;
-            color: #555;
-            max-width: 700px;
-            line-height: 1.6;
-        }
-
-        /* --- 4. 首頁卡片 (Playground-style Cards) --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            border-top: 5px solid;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.3rem;
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        /* 為卡片指定主題色 */
-        .card[data-page="page-queue"] { border-color: #007aff; } /* 藍色 */
-        .card[data-page="page-bubble"] { border-color: #ff9500; } /* 橘色 */
-        .card[data-page="page-list"] { border-color: #34c759; } /* 綠色 */
-        .card[data-page="page-tree"] { border-color: #af52de; } /* 紫色 */
-
-
-        /* --- 5. 佇列遊戲 (Queue Game) 專用樣式 --- */
-        .game-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 2rem;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        .controls input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .controls button {
-            padding: 0.75rem 1.25rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #enqueue-btn {
-            background-color: #007aff;
-            color: white;
-        }
-        #enqueue-btn:hover { background-color: #005ecb; }
-
-        #dequeue-btn {
-            background-color: #e5e5ea;
-            color: #333;
-        }
-        #dequeue-btn:hover { background-color: #dcdcdc; }
-
-        .queue-label {
+        .navbar {
+            background: linear-gradient(135deg, var(--squid-dark) 0%, #1a0a1a 100%);
+            border-bottom: 3px solid var(--squid-pink);
+            padding: 1rem 3rem;
             display: flex;
             justify-content: space-between;
-            font-weight: 600;
-            color: #555;
-            padding: 0 10px;
-        }
-
-        /* 佇列視覺 (輸送帶) */
-        .queue-belt {
-            background: #f4f4f4;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 80px;
-            display: flex;
             align-items: center;
-            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.3);
         }
+        .logo { font-size: 2rem; font-weight: 900; color: var(--squid-pink); text-shadow: 0 0 20px rgba(255, 20, 147, 0.8); letter-spacing: 2px; }
+        .player-auth-container { display: flex; align-items: center; gap: 1rem; }
+        .auth-button { background: var(--squid-pink); color: #000; border: none; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .auth-button:hover { background: var(--squid-cyan); box-shadow: 0 0 15px var(--squid-cyan); }
+        .player-profile { display: flex; align-items: center; gap: 1rem; }
+        .player-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--squid-cyan); }
+        .player-name { font-weight: 600; }
 
-        /* 佇列中的項目 (餐點) */
-        .queue-item {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); /* 橘黃漸層 */
-            color: #fff;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-right: 10px;
-            flex-shrink: 0; /* 確保項目不會被壓縮 */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+        .games-section, .articles-section { padding: 4rem 3rem; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 3rem; color: var(--squid-pink); text-shadow: 0 0 20px rgba(255, 20, 147, 0.6); }
 
-        .learning-guide {
-            background-color: #eef1f6;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            line-height: 1.7;
+        /* --- FINAL OCEAN & ISLANDS STYLE --- */
+        .ocean-frame {
+            background: linear-gradient(to top, #0a0a2a, #000010);
+            border: 3px solid var(--squid-cyan);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
+            min-height: 500px;
         }
-        .learning-guide h3 {
-            margin-top: 0;
-            color: #0052cc;
+        .waves-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 17px;
+            z-index: 1;
         }
-        .learning-guide ul {
-            padding-left: 20px;
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background-size: 1000px 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M 0 50 C 250 100 750 0 1000 50 Z" stroke="none" fill="rgba(0, 217, 255, 0.1)"></path></svg>');
+            animation: wave-move 15s linear infinite;
         }
-        .learning-guide code {
-            background-color: #dfe6f0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: "SF Mono", "Fira Code", monospace;
-        }
+        .wave.wave2 { bottom: 10px; opacity: 0.5; animation-duration: 12s; animation-direction: reverse; }
+        .wave.wave3 { bottom: 20px; opacity: 0.3; animation-duration: 9s; }
+        @keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-1000px); } }
 
-        /* --- 6. Toast 通知系統 --- */
-        .toast-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 9999;
+        .islands-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            z-index: 2;
+        }
+        .island {
+            width: 130px;
+            height: 120px;
+            background: linear-gradient(145deg, var(--island-sand), var(--island-sand-dark));
+            border: 3px solid #312821;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
             align-items: center;
-            gap: 10px;
-            min-width: 250px;
-            animation: slide-in-right 0.3s ease-out;
-        }
-
-        .toast.success { border-left: 4px solid #34c759; }
-        .toast.error { border-left: 4px solid #ff3b30; }
-        .toast.info { border-left: 4px solid #007aff; }
-        .toast.warning { border-left: 4px solid #ff9500; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast-message {
-            flex: 1;
-            font-size: 0.95rem;
-        }
-
-        /* --- 7. 動畫效果 --- */
-        @keyframes slide-in-right {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse-highlight {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .pulse-highlight {
-            animation: pulse-highlight 1s ease-out;
-        }
-
-        .shake {
-            animation: shake 0.3s ease-out;
-        }
-
-        .error-input {
-            border-color: #ff3b30 !important;
-            box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
-        }
-
-        /* --- 8. Tooltip --- */
-        .tooltip {
-            position: absolute;
-            background: #333;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
             color: white;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            z-index: 10000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .tooltip.show {
-            opacity: 1;
-        }
-
-        .tooltip::after {
-            content: '';
             position: absolute;
-            border: 5px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
+        .island:nth-child(1) { top: 20px; left: 10%; border-radius: 45% 55% 60% 40% / 70% 80% 20% 30%; }
+        .island:nth-child(2) { top: 180px; left: 25%; border-radius: 60% 40% 45% 55% / 70% 30% 70% 30%; }
+        .island:nth-child(3) { top: 40px; left: 45%; border-radius: 50% 50% 35% 65% / 50% 40% 60% 50%; }
+        .island:nth-child(4) { top: 220px; left: 60%; border-radius: 30% 70% 50% 50% / 60% 60% 40% 40%; }
+        .island:nth-child(5) { top: 60px; left: 75%; border-radius: 65% 35% 33% 67% / 57% 70% 30% 43%; }
+        .island:nth-child(6) { top: 250px; left: 85%; border-radius: 38% 62% 70% 30% / 50% 61% 39% 50%; }
 
-        .tooltip.top::after {
-            bottom: -10px;
+        .island:hover {
+            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border-color: var(--squid-cyan);
+            z-index: 11;
+        }
+        .island-icon { font-size: 3rem; line-height: 1; text-shadow: 0 0 10px #000; }
+        .island-name { font-size: 1rem; font-weight: bold; margin-top: 0.5rem; color: var(--squid-cyan); }
+        .island-description {
+            position: absolute;
+            bottom: 115%;
             left: 50%;
             transform: translateX(-50%);
-            border-top-color: #333;
-        }
-
-        /* --- 9. 操作指引面板 --- */
-        .instruction-panel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
+            width: 280px;
+            background: var(--squid-dark);
+            border: 2px solid var(--squid-cyan);
+            padding: 1rem;
             border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .instruction-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .instruction-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-
-        .progress-fill {
-            background: white;
-            height: 100%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-
-        .instruction-steps {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .step.completed {
-            background: rgba(52, 199, 89, 0.2);
-        }
-
-        .step.active {
-            background: rgba(255, 255, 255, 0.25);
-            font-weight: 600;
-            transform: scale(1.02);
-        }
-
-        .step.pending {
-            opacity: 0.6;
-        }
-
-        .step-icon {
-            font-size: 1.2rem;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .step.completed .step-icon::before {
-            content: '✓';
-        }
-
-        .step.active .step-icon::before {
-            content: '▶';
-            animation: pulse 1.5s infinite;
-        }
-
-        .step.pending .step-icon::before {
-            content: '○';
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .step-text {
-            flex: 1;
-        }
-
-        .concept-explanation {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .expand-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
-            text-align: left;
-            transition: background 0.2s;
-        }
-
-        .expand-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .explanation-content {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             line-height: 1.6;
-            display: none;
+            text-align: left;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
         }
+        .island-description::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -8px; border-width: 8px; border-style: solid; border-color: var(--squid-cyan) transparent transparent transparent; }
+        .island:hover .island-description { opacity: 1; visibility: visible; }
+        .island.disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(80%); }
+        .island.disabled:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.4); border-color: #312821; z-index: auto; }
+        .island.disabled .island-description { content: '請先登入以挑戰'; display: block; }
+        /* --- END NEW STYLE --- */
 
-        .explanation-content.show {
-            display: block;
+        .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
+        .article-card { background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%); border: 3px solid var(--squid-pink); border-radius: 20px; padding: 2rem; transition: all 0.3s; cursor: pointer; }
+        .article-card:hover { transform: translateY(-10px); box-shadow: 0 10px 40px rgba(255, 20, 147, 0.4); border-color: var(--squid-cyan); }
+        .article-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .article-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--squid-cyan); }
+        .article-subtitle { font-size: 1.1rem; color: #888; margin-bottom: 1rem; }
+        .article-description { color: #aaa; line-height: 1.6; }
+
+        /* Animation Modal Styles (Updated for Story) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 200; }
+        #animation-container { width: 90vw; height: 90vh; max-width: 1000px; max-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        #animation-svg { width: 100%; height: 100%; overflow: visible; font-family: 'VT323', monospace; }
+        .typing-text { fill: var(--squid-green); font-size: 24px; }
+        .cursor { fill: var(--squid-green); animation: blink 1s step-end infinite; }
+        .challenger { opacity: 0; animation: slide-in 1s 4s forwards; }
+        .challenger-body { fill: var(--squid-green); }
+        .challenger-head { fill: #ffdbac; }
+        .challenger-arm { fill: none; stroke: #ffdbac; stroke-width: 10; stroke-linecap: round; transform-origin: 160px 250px; }
+        .card-group { opacity: 0; animation: card-fall-in 1s 5.5s forwards; transform-origin: center; cursor: pointer; }
+        .card-rect { fill: #d2b48c; stroke: #a07c54; stroke-width: 2; }
+        .card-symbol { stroke: #a07c54; stroke-width: 8; fill: none; }
+        .card-challenge-text {
+            font-size: 18px;
+            fill: var(--squid-pink);
+            font-weight: bold;
+            text-anchor: middle;
+            opacity: 0;
+            animation: fade-in 1s 7s forwards;
         }
-
+        .close-btn { cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+        .close-btn:hover { opacity: 1; }
+        .close-btn-line { stroke: #888; stroke-width: 4; }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes fade-in { to { opacity: 1; } }
+        @keyframes slide-in { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes card-fall-in { from { transform: translateY(-300px) rotate(-15deg); opacity: 0; } to { transform: translateY(0) rotate(0); opacity: 1; } }
+        @keyframes arm-slap { 0% { transform: rotate(0deg); } 50% { transform: rotate(20deg); } 100% { transform: rotate(-10deg); } }
+        @keyframes card-flip-out { from { transform: rotateY(0) scale(1); opacity: 1; } to { transform: rotateY(360deg) scale(0); opacity: 0; } }
     </style>
 </head>
 <body>
+    <!-- Animation Modal -->
+    <div id="animation-modal" class="modal-overlay">
+        <div id="animation-container">
+            <svg id="animation-svg" viewBox="0 0 800 400">
+                <g id="text-scene"><text id="line1" class="typing-text" x="50" y="180"></text><text id="line2" class="typing-text" x="50" y="230"></text><rect id="cursor" class="cursor" x="50" y="160" width="12" height="24" style="display: none;"></rect></g>
+                <g id="character-scene" style="opacity: 0;"><g class="challenger"><rect class="challenger-body" x="120" y="230" width="60" height="100" rx="10" /><circle class="challenger-head" cx="150" cy="200" r="30" /><path id="challenger-arm" class="challenger-arm" d="M 160 250 C 200 230, 250 250, 280 280" /></g><g id="card-group" class="card-group"><rect class="card-rect" x="350" y="150" width="220" height="120" rx="5"></rect><circle class="card-symbol" cx="385" cy="180" r="10"></circle><polygon class="card-symbol" points="425,170 440,190 410,190"></polygon><rect class="card-symbol" x="455" y="170" width="20" height="20"></rect><text id="card-text" class="card-challenge-text" x="460" y="240">你，敢接受挑戰嗎？</text></g></g>
+                <g id="close-btn" class="close-btn"><line class="close-btn-line" x1="760" y1="20" x2="780" y2="40" /><line class="close-btn-line" x1="780" y1="20" x2="760" y2="40" /></g>
+            </svg>
+        </div>
+    </div>
 
-<nav class="sidebar">
-    <h2>資料結構小酒館</h2>
-    <ul>
-        <li><a href="#" class="nav-link active" data-page="page-home">🏠 首頁</a></li>
-        <li><a href="#" class="nav-link" data-page="page-queue">🍔 佇列 (Queue)</a></li>
-        <li><a href="#" class="nav-link" data-page="page-bubble">🥂 氣泡排序法</a></li>
-        <li><a href="#" class="nav-link" data-page="page-list">🧾 雙向連結串列</a></li>
-        <li><a href="#" class="nav-link" data-page="page-tree">🌳 樹狀結構</a></li>
-    </ul>
-</nav>
+    <!-- Main Content -->
+    <nav class="navbar"><div class="logo">🦑 演算法生存挑戰</div><div id="player-auth-container" class="player-auth-container"></div></nav>
 
-<main class="content">
-
-    <section id="page-home" class="page active">
-        <h1>歡迎來到資料結構小酒館！</h1>
-        <p class="intro">
-            在這裡，我們不談生硬的理論。您將扮演小酒館的實習生，
-            透過完成一系列的「遊戲關卡」，在玩樂中學會最重要的資料結構與演算法。
-        </p>
-
-        <div class="card-grid">
-            <div class="card" data-page="page-queue">
-                <h3>🍔 關卡 1: 吧台出餐區</h3>
-                <p>學習「佇列 (Queue)」的先進先出 (FIFO) 原則，確保餐點依照正確順序送出！</p>
-            </div>
-            <div class="card" data-page="page-bubble">
-                <h3>🥂 關卡 2: 酒杯整理架</h3>
-                <p>學習「氣泡排序法」，將吧檯上雜亂的酒杯由矮到高一一排好。</p>
-            </div>
-            <div class="card" data-page="page-list">
-                <h3>🧾 關卡 3: VIP 訂位表</h3>
-                <p>學習「雙向連結串列」，彈性地在訂位表中插入或刪除 VIP 顧客。</p>
-            </div>
-            <div class="card" data-page="page-tree">
-                <h3>🌳 關卡 4: 菜單分類系統</h3>
-                <p>學習「樹狀結構」，設計一份有層次、易於瀏覽的餐廳菜單。</p>
+    <section class="games-section">
+        <h2 class="section-title">挑戰大廳</h2>
+        <div class="ocean-frame">
+            <div class="waves-wrapper"><div class="wave"></div><div class="wave wave2"></div><div class="wave wave3"></div></div>
+            <div class="islands-container">
+                <a class="island" data-game="queue-game.html"><div class="island-icon">🔨</div><div class="island-name">打地鼠挑戰</div><div class="island-description"><strong>Queue (佇列):</strong> 學習先進先出 (FIFO) 的概念。地鼠依序排隊出現，你必須按照牠們出現的順序進行打擊。</div></a>
+                <a class="island" data-game="stack-game.html"><div class="island-icon">📚</div><div class="island-name">堆疊消消樂</div><div class="island-description"><strong>Stack (堆疊):</strong> 學習後進先出 (LIFO) 的概念。方塊會不斷堆疊起來，但你永遠只能從最頂端的那一個開始消除。</div></a>
+                <a class="island" data-game="linked-list-game.html"><div class="island-icon">🍪</div><div class="island-name">椪糖挑戰</div><div class="island-description"><strong>Linked List (鏈結串列):</strong> 學習節點之間如何透過指標連結。每個椪糖圖案都是一個節點，你需要依循指標小心翼翼地將它完整取出。</div></a>
+                <a class="island" data-game="tree-game.html"><div class="island-icon">🌉</div><div class="island-name">玻璃橋挑戰</div><div class="island-description"><strong>Binary Tree (二元樹):</strong> 學習樹狀結構的遍歷。每一步都面臨向左或向右的選擇，錯誤的決定將導致墜落，正確的路徑則構成一棵二元樹。</div></a>
+                <a class="island" data-game="graph-game.html"><div class="island-icon">🗺️</div><div class="island-name">最短路徑挑戰</div><div class="island-description"><strong>Graph (圖):</strong> 學習圖的遍歷與最短路徑演算法。在看似複雜的地圖中，運用演算法思維找出從起點到終點的最佳路線。</div></a>
+                <a class="island" data-game="sorting-game.html"><div class="island-icon">🎯</div><div class="island-name">彈珠排序挑戰</div><div class="island-description"><strong>Sorting (排序):</strong> 親手操作經典的「氣泡排序法」，將混亂的彈珠按照大小順序排列整齊，直觀地理解排序演算法的運作過程。</div></a>
             </div>
         </div>
     </section>
 
-    <section id="page-queue" class="page">
-        <h1>🍔 關卡 1: 吧台出餐區 (佇列)</h1>
-        <p class="intro">廚房做好了餐點！我們的任務是透過輸送帶，確保餐點能「先進先出」，正確地送到顧客手中。</p>
-
-        <!-- 操作指引面板 -->
-        <div class="instruction-panel" id="queue-instructions">
-            <div class="instruction-header">
-                <h3>📋 任務指引</h3>
-                <button class="reset-btn" id="reset-btn">🔄 重置</button>
-            </div>
-
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-            </div>
-
-            <ol class="instruction-steps" id="instruction-steps">
-                <!-- 步驟會由 JavaScript 動態生成 -->
-            </ol>
-
-            <div class="concept-explanation">
-                <button class="expand-btn" id="expand-btn">💡 為什麼這樣做？</button>
-                <div class="explanation-content" id="explanation-content">
-                    這個動作叫做 <strong>Enqueue（入隊）</strong>，會把新元素加到佇列的尾端。
-                    佇列遵循 FIFO（先進先出）原則，就像排隊買票一樣，先到的人先服務！
-                    時間複雜度：O(1) - 表示無論佇列有多長，加入新元素的時間都是固定的。
-                </div>
-            </div>
-        </div>
-
-        <div class="learning-guide">
-            <h3>1. 什麼是佇列 (Queue)？</h3>
-            <p>
-                想像一下在咖啡店排隊：先來的人會先點餐，新來的客人必須排在隊伍的最後面。這就是「佇列」的核心精神：<b>先進先出 (First-In, First-Out, FIFO)</b>。
-            </p>
-
-            <h3>2. 如何玩這個遊戲？</h3>
-            <p>在這個遊戲中，「輸送帶」就是我們的佇列：</p>
-            <ul>
-                <li><b>放到輸送帶 (Enqueue)</b>：將新的餐點放到輸送帶的「尾端」。</li>
-                <li><b>取餐給顧客 (Dequeue)</b>：從輸送帶的「前端」取走最早放上去的餐點。</li>
-            </ul>
-
-            <p><b>請你試試看：</b></p>
-            <ol>
-                <li>在輸入框中輸入「漢堡」，按下 <code>放到輸送帶</code>。</li>
-                <li>接著輸入「薯條」，再按一次。</li>
-                <li>你會看到輸送帶上餐點的順序是： 漢堡 → 薯條。</li>
-                <li>現在，按下 <code>取餐給顧客</code>，最先進來的「漢堡」會被先取走。</li>
-            </ol>
-            <p>
-                這個遊戲完美展示了佇列「先進先出」的特性。在程式設計中，佇列常用於處理需要依序處理的任務，例如處理網路請求、管理印表機的工作排程等。
-            </p>
-        </div>
-
-        <div class="game-container">
-            <h3>遊戲控制</h3>
-            <div class="controls">
-                <input type="text" id="item-input" placeholder="輸入餐點名稱 (例如: 漢堡)">
-                <button id="enqueue-btn">放到輸送帶 (Enqueue)</button>
-                <button id="dequeue-btn">取餐給顧客 (Dequeue)</button>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;">
-
-            <h3>輸送帶 (佇列本體)</h3>
-            <div class="queue-label">
-                <span id="label-front">➡️ 前端 (Front) - 從這裡取餐</span>
-                <span id="label-rear">⬅️ 尾端 (Rear) - 從這裡放餐</span>
-            </div>
-            <div class="queue-belt" id="queue-visual">
-            </div>
+    <section class="articles-section">
+        <h2 class="section-title">📚 學習資源</h2>
+        <div class="articles-grid">
+            <div class="article-card" onclick="location.href='article-algorithm-intro.html';"><div class="article-icon">💡</div><h3 class="article-title">演算法概論：程式設計的靈魂</h3><p class="article-subtitle">從概念到應用</p><p class="article-description">深入淺出地解釋演算法的定義、重要性，以及它如何驅動現代科技。</p></div>
+            <div class="article-card" onclick="location.href='article-data-structure-overview.html';"><div class="article-icon">🧱</div><h3 class="article-title">資料結構總覽：高效組織數據的藝術</h3><p class="article-subtitle">陣列、鏈結串列、樹與圖</p><p class="article-description">探索各種資料結構的特性與應用場景，了解如何選擇最適合的工具。</p></div>
+            <div class="article-card" onclick="location.href='article-queue-stack.html';"><div class="article-icon">🔄</div><h3 class="article-title">佇列與堆疊：先進先出與後進先出</h3><p class="article-subtitle">兩種基本數據結構的應用</p><p class="article-description">透過生活實例，理解佇列 (Queue) 和堆疊 (Stack) 的運作原理及其在程式中的應用。</p></div>
+            <div class="article-card" onclick="location.href='article-linked-list.html';"><div class="article-icon">🔗</div><h3 class="article-title">鏈結串列：彈性數據組織的基石</h3><p class="article-subtitle">動態記憶體管理的秘密</p><p class="article-description">學習鏈結串列的節點連結方式，以及它在動態數據處理上的優勢。</p></div>
+            <div class="article-card" onclick="location.href='article-tree-binary-tree.html';"><div class="article-icon">🌳</div><h3 class="article-title">樹狀結構與二元樹：階層數據的完美呈現</h3><p class="article-subtitle">從家譜到搜尋引擎</p><p class="article-description">探索樹的各種形態，特別是二元樹的搜尋、插入與刪除操作。</p></div>
+            <div class="article-card" onclick="location.href='article-graph-dijkstra.html';"><div class="article-icon">🌐</div><h3 class="article-title">圖論與最短路徑：複雜網絡的導航者</h3><p class="article-subtitle">Dijkstra 演算法的應用</p><p class="article-description">理解圖的構成，以及 Dijkstra 演算法如何在高鐵路線、網路路由中找到最佳路徑。</p></div>
         </div>
     </section>
 
-    <section id="page-bubble" class="page">
-        <h1>🥂 關卡 2: 酒杯整理架 (氣泡排序法)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
+    <script type="module">
+        import { onAuthenticationChanged } from './firebase-auth.js';
 
-    <section id="page-list" class="page">
-        <h1>🧾 關卡 3: VIP 訂位表 (雙向連結串列)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
+        const animationModal = document.getElementById('animation-modal');
+        const cardGroup = document.getElementById('card-group');
+        const challengerArm = document.getElementById('challenger-arm');
+        const closeBtn = document.getElementById('close-btn');
 
-    <section id="page-tree" class="page">
-        <h1>🌳 關卡 4: 菜單分類系統 (樹狀結構)</h1>
-        <p class="intro">這個關卡正在準備中！敬請期待。</p>
-    </section>
+        // --- Story-driven Animation Logic ---
+        const typingSpeed = 80;
+        const line1 = document.getElementById('line1');
+        const line2 = document.getElementById('line2');
+        const cursor = document.getElementById('cursor');
+        const textScene = document.getElementById('text-scene');
+        const characterScene = document.getElementById('character-scene');
 
-</main>
+        function type(element, text, callback) {
+            let i = 0;
+            cursor.style.display = 'block';
+            const cursorY = element.getAttribute('y') - 20;
+            cursor.setAttribute('y', cursorY);
 
-<script>
-    // ===== Core Classes =====
-
-    // FeedbackEngine: 處理所有視覺回饋
-    class FeedbackEngine {
-        constructor() {
-            this.toastContainer = null;
-            this.initToastContainer();
-        }
-
-        initToastContainer() {
-            this.toastContainer = document.createElement('div');
-            this.toastContainer.className = 'toast-container';
-            document.body.appendChild(this.toastContainer);
-        }
-
-        showToast(message, type = 'success', duration = 3000) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const icons = {
-                success: '✓',
-                error: '✗',
-                info: 'ℹ',
-                warning: '⚠'
-            };
-
-            toast.innerHTML = `
-                <span class="toast-icon">${icons[type] || icons.info}</span>
-                <span class="toast-message">${message}</span>
-            `;
-
-            this.toastContainer.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
-        }
-
-        highlightElement(selector, duration = 1000) {
-            const element = document.querySelector(selector);
-            if (!element) return;
-
-            element.classList.add('pulse-highlight');
-            setTimeout(() => {
-                element.classList.remove('pulse-highlight');
-            }, duration);
-        }
-
-        showTooltip(element, message, position = 'top') {
-            const tooltip = document.createElement('div');
-            tooltip.className = `tooltip ${position}`;
-            tooltip.textContent = message;
-            document.body.appendChild(tooltip);
-
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2 + 'px';
-            tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
-
-            setTimeout(() => tooltip.classList.add('show'), 10);
-
-            setTimeout(() => {
-                tooltip.classList.remove('show');
-                setTimeout(() => tooltip.remove(), 200);
-            }, 2000);
-        }
-
-        animateAction(element, animationType) {
-            if (typeof element === 'string') {
-                element = document.querySelector(element);
-            }
-            if (!element) return;
-
-            element.classList.add(animationType);
-            setTimeout(() => {
-                element.classList.remove(animationType);
-            }, 300);
-        }
-
-        showErrorHint(inputElement, message) {
-            if (typeof inputElement === 'string') {
-                inputElement = document.querySelector(inputElement);
-            }
-            if (!inputElement) return;
-
-            inputElement.classList.add('error-input');
-            this.animateAction(inputElement, 'shake');
-            this.showTooltip(inputElement, message, 'top');
-
-            setTimeout(() => {
-                inputElement.classList.remove('error-input');
-            }, 2000);
-
-            inputElement.focus();
-        }
-    }
-
-    // ErrorHandler: 處理錯誤並提供友善提示
-    class ErrorHandler {
-        constructor(feedbackEngine) {
-            this.feedbackEngine = feedbackEngine;
-        }
-
-        handleEmptyInput() {
-            const input = document.getElementById('item-input');
-            this.feedbackEngine.showErrorHint(input, '請輸入餐點名稱！試試「漢堡」或「薯條」');
-        }
-
-        handleEmptyQueue() {
-            const dequeueBtn = document.getElementById('dequeue-btn');
-            this.feedbackEngine.animateAction(dequeueBtn, 'shake');
-            this.feedbackEngine.showToast('輸送帶是空的！請先加入一些餐點', 'error');
-
-            // 引導使用者到正確的操作
-            const enqueueBtn = document.getElementById('enqueue-btn');
-            this.feedbackEngine.highlightElement('#enqueue-btn', 2000);
-        }
-
-        handleWrongAction(expectedAction, currentStep) {
-            this.feedbackEngine.showToast(
-                `還沒到這一步喔！請先完成：${currentStep.text}`,
-                'info'
-            );
-        }
-    }
-
-    // InstructionPanel: 顯示步驟指引
-    class InstructionPanel {
-        constructor(containerId, steps) {
-            this.container = document.getElementById(containerId);
-            this.steps = steps;
-            this.currentStepIndex = 0;
-            this.render();
-        }
-
-        render() {
-            const stepsContainer = document.getElementById('instruction-steps');
-            if (!stepsContainer) return;
-
-            stepsContainer.innerHTML = '';
-            this.steps.forEach((step, index) => {
-                const li = document.createElement('li');
-                li.className = 'step';
-
-                if (index < this.currentStepIndex) {
-                    li.classList.add('completed');
-                } else if (index === this.currentStepIndex) {
-                    li.classList.add('active');
-                } else {
-                    li.classList.add('pending');
+            function typing() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    cursor.setAttribute('x', 50 + (element.textContent.length * 14.5));
+                    i++;
+                    setTimeout(typing, typingSpeed);
+                } else if (callback) {
+                    cursor.style.display = 'none';
+                    callback();
                 }
-
-                li.innerHTML = `
-                    <span class="step-icon"></span>
-                    <span class="step-text">${step.text}</span>
-                `;
-
-                stepsContainer.appendChild(li);
-            });
-
-            this.updateProgressBar();
-        }
-
-        updateProgressBar() {
-            const progressFill = document.getElementById('progress-fill');
-            if (!progressFill) return;
-
-            const progress = (this.currentStepIndex / this.steps.length) * 100;
-            progressFill.style.width = `${progress}%`;
-        }
-
-        nextStep() {
-            if (this.currentStepIndex < this.steps.length) {
-                this.currentStepIndex++;
-                this.render();
             }
+            typing();
         }
 
-        highlightStep(index) {
-            this.currentStepIndex = index;
-            this.render();
-        }
-
-        reset() {
-            this.currentStepIndex = 0;
-            this.render();
-        }
-
-        getCurrentStep() {
-            return this.steps[this.currentStepIndex];
-        }
-    }
-
-    // StateManager: 集中管理所有狀態
-    class StateManager {
-        constructor() {
-            this.state = {
-                currentModule: 'queue',
-                currentStep: 0,
-                completedSteps: [],
-                queueData: [],
-                practiceTasksCompleted: []
-            };
-            this.listeners = [];
-        }
-
-        setState(updates) {
-            this.state = { ...this.state, ...updates };
-            this.notifyListeners();
-        }
-
-        getState() {
-            return this.state;
-        }
-
-        subscribe(listener) {
-            this.listeners.push(listener);
-        }
-
-        notifyListeners() {
-            this.listeners.forEach(listener => listener(this.state));
-        }
-
-        saveToLocalStorage() {
-            try {
-                localStorage.setItem('gameState', JSON.stringify(this.state));
-            } catch (e) {
-                console.warn('無法儲存狀態到 localStorage');
-            }
-        }
-
-        loadFromLocalStorage() {
-            try {
-                const saved = localStorage.getItem('gameState');
-                if (saved) {
-                    this.state = { ...this.state, ...JSON.parse(saved) };
-                    this.notifyListeners();
-                }
-            } catch (e) {
-                console.warn('無法從 localStorage 載入狀態');
-            }
-        }
-
-        resetModule(moduleId) {
-            this.setState({
-                currentStep: 0,
-                completedSteps: [],
-                queueData: [],
-                practiceTasksCompleted: []
-            });
-            this.saveToLocalStorage();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // 初始化核心系統
-        const stateManager = new StateManager();
-        const feedbackEngine = new FeedbackEngine();
-        const errorHandler = new ErrorHandler(feedbackEngine);
-        stateManager.loadFromLocalStorage();
-
-        // --- 1. 頁面切換邏輯 ---
-        const navLinks = document.querySelectorAll('.nav-link');
-        const cards = document.querySelectorAll('.card');
-        const pages = document.querySelectorAll('.page');
-
-        function showPage(pageId) {
-            // 隱藏所有頁面
-            pages.forEach(page => page.classList.remove('active'));
-
-            // 顯示目標頁面
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.add('active');
-            }
-
-            // 更新導覽列的 active 狀態
-            navLinks.forEach(link => {
-                if (link.dataset.page === pageId) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
-                }
-            });
-        }
-
-        // 幫導覽列加上點擊事件
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault(); // 防止頁面跳轉
-                const pageId = e.target.dataset.page;
-                showPage(pageId);
-            });
-        });
-
-        // 幫首頁卡片加上點擊事件
-        cards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                const pageId = e.currentTarget.dataset.page;
-                showPage(pageId);
-            });
-        });
-
-        // --- 2. 佇列 (Queue) 遊戲邏輯 ---
-        const enqueueBtn = document.getElementById('enqueue-btn');
-        const dequeueBtn = document.getElementById('dequeue-btn');
-        const itemInput = document.getElementById('item-input');
-        const queueVisual = document.getElementById('queue-visual');
-
-        // 定義佇列遊戲的步驟
-        const queueSteps = [
-            { id: 1, text: '在輸入框輸入「漢堡」', action: 'input' },
-            { id: 2, text: '按下「放到輸送帶」按鈕', action: 'enqueue' },
-            { id: 3, text: '觀察餐點出現在輸送帶尾端', action: 'observe' },
-            { id: 4, text: '再加入「薯條」到輸送帶', action: 'enqueue' },
-            { id: 5, text: '按下「取餐給顧客」按鈕', action: 'dequeue' },
-            { id: 6, text: '觀察最先加入的餐點被取走', action: 'complete' }
-        ];
-
-        // 初始化操作指引面板
-        let instructionPanel = null;
-        if (document.getElementById('queue-instructions')) {
-            instructionPanel = new InstructionPanel('queue-instructions', queueSteps);
-        }
-
-        // 展開/收合說明按鈕
-        const expandBtn = document.getElementById('expand-btn');
-        const explanationContent = document.getElementById('explanation-content');
-        if (expandBtn && explanationContent) {
-            expandBtn.addEventListener('click', () => {
-                explanationContent.classList.toggle('show');
-                expandBtn.textContent = explanationContent.classList.contains('show')
-                    ? '💡 收起說明'
-                    : '💡 為什麼這樣做？';
-            });
-        }
-
-        // 重置按鈕
-        const resetBtn = document.getElementById('reset-btn');
-        if (resetBtn && instructionPanel) {
-            resetBtn.addEventListener('click', () => {
-                if (confirm('確定要重新開始嗎？')) {
-                    instructionPanel.reset();
-                    queueVisual.innerHTML = '';
-                    itemInput.value = '';
-                    feedbackEngine.showToast('已重置！讓我們重新開始', 'info');
-                }
-            });
-        }
-
-        // Enqueue (入隊)
-        enqueueBtn.addEventListener('click', () => {
-            const itemName = itemInput.value.trim();
-            if (itemName === "") {
-                errorHandler.handleEmptyInput();
-                return;
-            }
-
-            // 建立一個新的 "餐點" div
-            const newItem = document.createElement('div');
-            newItem.classList.add('queue-item');
-            newItem.textContent = itemName;
-
-            // 加到輸送帶 (佇列) 的尾端
-            queueVisual.appendChild(newItem);
-
-            // 顯示成功訊息
-            feedbackEngine.showToast(`太棒了！「${itemName}」已加入輸送帶`, 'success');
-
-            // 高亮尾端標籤
-            feedbackEngine.highlightElement('#label-rear', 1000);
-
-            // 推進步驟
-            if (instructionPanel) {
-                const currentStep = instructionPanel.getCurrentStep();
-                if (currentStep && currentStep.action === 'enqueue') {
+        function playAnimation() {
+            animationModal.style.display = 'flex';
+            setTimeout(() => {
+                type(line1, '你厭倦了無止盡的 Bug 與複雜的邏輯嗎？', () => {
                     setTimeout(() => {
-                        instructionPanel.nextStep();
-                        if (instructionPanel.currentStepIndex < queueSteps.length) {
-                            feedbackEngine.showToast('很好！繼續下一步', 'info', 2000);
-                        }
+                        type(line2, '一個能將抽象概念化為生存挑戰的遊戲。', () => {
+                            setTimeout(() => {
+                                textScene.style.display = 'none';
+                                characterScene.style.opacity = 1;
+                            }, 1000);
+                        });
                     }, 500);
-                }
-            }
-
-            itemInput.value = ""; // 清空輸入框
-        });
-
-        // Dequeue (出隊)
-        dequeueBtn.addEventListener('click', () => {
-            // 檢查輸送帶上是否有餐點
-            if (queueVisual.firstElementChild) {
-                const itemName = queueVisual.firstElementChild.textContent;
-                // 移除 "第一個" (最前面) 的餐點
-                queueVisual.firstElementChild.remove();
-                feedbackEngine.showToast(`「${itemName}」已送給顧客！`, 'success');
-
-                // 高亮前端標籤
-                feedbackEngine.highlightElement('#label-front', 1000);
-
-                // 推進步驟
-                if (instructionPanel) {
-                    const currentStep = instructionPanel.getCurrentStep();
-                    if (currentStep && currentStep.action === 'dequeue') {
-                        setTimeout(() => {
-                            instructionPanel.nextStep();
-                            if (instructionPanel.currentStepIndex >= queueSteps.length) {
-                                feedbackEngine.showToast('🎉 恭喜！你已完成佇列關卡！', 'success', 4000);
-                            }
-                        }, 500);
-                    }
-                }
-            } else {
-                errorHandler.handleEmptyQueue();
-            }
-        });
-
-        // 監聽輸入框，推進步驟
-        if (itemInput && instructionPanel) {
-            itemInput.addEventListener('input', () => {
-                const currentStep = instructionPanel.getCurrentStep();
-                if (currentStep && currentStep.action === 'input' && itemInput.value.trim().length > 0) {
-                    setTimeout(() => {
-                        instructionPanel.nextStep();
-                        feedbackEngine.showToast('很好！現在按下按鈕', 'info', 2000);
-                    }, 300);
-                }
-            });
+                });
+            }, 1000);
         }
-    });
-</script>
 
+        function closeAnimation() { animationModal.style.display = 'none'; }
+        cardGroup.addEventListener('click', () => {
+            challengerArm.style.animation = 'arm-slap 0.2s ease-in forwards';
+            cardGroup.style.animation = 'card-flip-out 0.5s 0.1s ease-in-out forwards';
+            setTimeout(closeAnimation, 800);
+        });
+        closeBtn.addEventListener('click', closeAnimation);
+        
+        if (!sessionStorage.getItem('hasVisited')) {
+            window.addEventListener('load', playAnimation);
+            sessionStorage.setItem('hasVisited', 'true');
+        }
+
+        // --- Page transition animation ---
+        document.querySelectorAll('.island').forEach(island => {
+            island.addEventListener('click', function(e) {
+                if (this.classList.contains('disabled')) { e.preventDefault(); return; }
+                e.preventDefault();
+                const destination = this.dataset.game;
+                document.body.style.transition = 'opacity 0.5s ease-out';
+                document.body.style.opacity = '0';
+                setTimeout(() => { window.location.href = destination; }, 500);
+            });
+        });
+
+        // --- Auth Logic ---
+        onAuthenticationChanged(user => {
+            const islands = document.querySelectorAll('.island');
+            if (user) {
+                islands.forEach(island => island.classList.remove('disabled'));
+            } else {
+                islands.forEach(island => {
+                    if (island.dataset.game === 'queue-game.html') {
+                        island.classList.remove('disabled');
+                        return;
+                    }
+                    island.classList.add('disabled');
+                });
+            }
+        });
+    </script>
+    <script type="module" src="main-auth.js"></script>
 </body>
 </html>

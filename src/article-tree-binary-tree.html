@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樹狀結構與二元樹：階層數據的完美呈現</title>
+    <style>
+        :root {
+            --squid-pink: #ff1493;
+            --squid-cyan: #00d9ff;
+            --squid-dark: #0a0a0a;
+            --squid-green: #00ff41;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--squid-dark);
+            color: #fff;
+            line-height: 1.8;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a0a 100%);
+            border: 3px solid var(--squid-pink);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.3);
+            position: relative;
+        }
+        h1 {
+            color: var(--squid-cyan);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+        h2 {
+            color: var(--squid-pink);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h3 {
+            color: var(--squid-green);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        ul {
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--squid-pink);
+            color: #000;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 2rem;
+        }
+        .back-button:hover {
+            background: var(--squid-cyan);
+            box-shadow: 0 0 15px var(--squid-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>樹狀結構與二元樹：階層數據的完美呈現</h1>
+        <h2>從家譜到搜尋引擎</h2>
+        <p>樹狀結構是一種非線性的資料結構，它以分層的方式組織數據，非常適合表示具有層次關係的數據，例如文件系統、組織架構或家譜。在電腦科學中，樹被廣泛應用於資料庫索引、編譯器設計和網路路由等領域。</p>
+
+        <h3>樹的基本概念</h3>
+        <ul>
+            <li><strong>節點 (Node)</strong>：樹的基本組成單位，包含數據和指向其子節點的指針。</li>
+            <li><strong>根節點 (Root Node)</strong>：樹的最頂端節點，沒有父節點。</li>
+            <li><strong>父節點 (Parent Node)</strong>：直接位於某節點上方的節點。</li>
+            <li><strong>子節點 (Child Node)</strong>：直接位於某節點下方的節點。</li>
+            <li><strong>葉節點 (Leaf Node)</strong>：沒有子節點的節點。</li>
+            <li><strong>邊 (Edge)</strong>：連接兩個節點的線。</li>
+            <li><strong>深度 (Depth)</strong>：從根節點到某節點的路徑長度。</li>
+            <li><strong>高度 (Height)</strong>：從某節點到其最遠葉節點的最長路徑長度。</li>
+        </ul>
+
+        <h3>二元樹 (Binary Tree)</h3>
+        <p>二元樹是樹狀結構中最常見的一種，它的每個節點最多只有兩個子節點，通常稱為左子節點和右子節點。</p>
+        <ul>
+            <li><strong>二元搜尋樹 (Binary Search Tree, BST)</strong>：
+                <p>一種特殊的二元樹，對於任意節點，其左子樹中所有節點的值都小於該節點的值，而右子樹中所有節點的值都大於該節點的值。這使得二元搜尋樹非常適合進行高效的搜尋、插入和刪除操作。</p>
+            </li>
+            <li><strong>平衡二元樹 (Balanced Binary Tree)</strong>：
+                <p>為了避免二元搜尋樹在最壞情況下退化成鏈結串列（導致效率降低），平衡二元樹會確保樹的高度保持在一定範圍內，例如 AVL 樹、紅黑樹。</p>
+            </li>
+        </ul>
+
+        <h3>二元樹的遍歷 (Traversal)</h3>
+        <p>遍歷是指按照特定順序訪問樹中所有節點的過程。常見的二元樹遍歷方式有：</p>
+        <ul>
+            <li><strong>前序遍歷 (Pre-order Traversal)</strong>：根節點 -> 左子樹 -> 右子樹。</li>
+            <li><strong>中序遍歷 (In-order Traversal)</strong>：左子樹 -> 根節點 -> 右子樹。對於二元搜尋樹，中序遍歷會得到一個排序好的序列。</li>
+            <li><strong>後序遍歷 (Post-order Traversal)</strong>：左子樹 -> 右子樹 -> 根節點。</li>
+            <li><strong>層次遍歷 (Level-order Traversal)</strong>：從上到下，從左到右，逐層訪問節點。</li>
+        </ul>
+
+        <h3>應用場景</h3>
+        <ul>
+            <li><strong>資料庫索引</strong>：B 樹和 B+ 樹是資料庫中常用的索引結構，能快速檢索數據。</li>
+            <li><strong>檔案系統</strong>：目錄和子目錄的組織方式。</li>
+            <li><strong>編譯器</strong>：語法樹 (Parse Tree) 用於表示程式碼的結構。</li>
+            <li><strong>決策樹</strong>：機器學習中用於分類和回歸的模型。</li>
+        </ul>
+        <p>樹狀結構以其獨特的階層特性，為數據的組織和管理提供了強大的工具，是理解複雜數據關係的關鍵。</p>
+    </div>
+    <a href="index.html" class="back-button">返回首頁</a>
+</body>
+</html>
