@@ -43,14 +43,14 @@
         .games-section, .articles-section { padding: 4rem 3rem; }
         .section-title { text-align: center; font-size: 2.5rem; font-weight: 900; margin-bottom: 3rem; color: var(--squid-pink); text-shadow: 0 0 20px rgba(255, 20, 147, 0.6); }
 
-        /* --- FINAL OCEAN & ISLANDS STYLE --- */
+        /* --- ENHANCED OCEAN & ISLANDS STYLE --- */
         .ocean-frame {
-            background: linear-gradient(to top, #0a0a2a, #000010);
+            background: linear-gradient(to top, #003366, #001f3f); /* Brighter, more distinct blue */
             border: 3px solid var(--squid-cyan);
             border-radius: 20px;
             padding: 3rem 2rem;
             position: relative;
-            box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
+            box-shadow: inset 0 10px 30px rgba(0,0,0,0.5), 0 0 50px rgba(0, 217, 255, 0.5); /* Added inner shadow for depth */
             min-height: 500px;
         }
         .waves-wrapper {
@@ -70,11 +70,12 @@
             width: 200%;
             height: 100px;
             background-size: 1000px 100px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M 0 50 C 250 100 750 0 1000 50 Z" stroke="none" fill="rgba(0, 217, 255, 0.1)"></path></svg>');
+            /* Increased wave opacity */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M 0 50 C 250 100 750 0 1000 50 Z" stroke="none" fill="rgba(0, 217, 255, 0.2)"></path></svg>');
             animation: wave-move 15s linear infinite;
         }
-        .wave.wave2 { bottom: 10px; opacity: 0.5; animation-duration: 12s; animation-direction: reverse; }
-        .wave.wave3 { bottom: 20px; opacity: 0.3; animation-duration: 9s; }
+        .wave.wave2 { bottom: 10px; opacity: 0.7; animation-duration: 12s; animation-direction: reverse; } /* Increased opacity */
+        .wave.wave3 { bottom: 20px; opacity: 0.5; animation-duration: 9s; } /* Increased opacity */
         @keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-1000px); } }
 
         .islands-container {
